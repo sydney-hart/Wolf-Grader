@@ -56,7 +56,7 @@ public class Submission {
 	/** **/
 	public static final String GRADE_IN_RETURN = "IN";
 	/** **/
-	public static final String F_AIV_RETURN = "F-AIV";
+	public static final String GRADE_F_AIV_RETURN = "F-AIV";
 	
 	/** Comments go here */
 	public enum PlagiarismCheckResult { PASS, FAIL, NONE }
