@@ -15,7 +15,7 @@ public class AssignmentReader {
 	 * @param fileName
 	 * @return
 	 */
-	public ArrayList<Assignment> readAssignmentFile(String fileName) {
+	public static ArrayList<Assignment> readAssignmentFile(String fileName) {
 		return null;
 	}
 	
@@ -24,7 +24,7 @@ public class AssignmentReader {
 	 * @param assignmentText
 	 * @return
 	 */
-	private Assignment processAssignment(String assignmentText) {
+	private static Assignment processAssignment(String assignmentText) {
 		return null;
 	}
 	
@@ -33,7 +33,7 @@ public class AssignmentReader {
 	 * @param assignmentLine
 	 * @return
 	 */
-	private Assignment processAssignmentLine(String assignmentLine) {
+	private static Assignment processAssignmentLine(String assignmentLine) {
 		return null;
 	}
 	
@@ -42,7 +42,7 @@ public class AssignmentReader {
 	 * @param submissionLine
 	 * @return
 	 */
-	private Submission processSubmission(String submissionLine) {
+	private static Submission processSubmission(String submissionLine) {
 		return null;
 	}
 }

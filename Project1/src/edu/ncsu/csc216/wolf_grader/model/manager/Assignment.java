@@ -127,8 +127,8 @@ public class Assignment {
 	 * 
 	 * @param id
 	 */
-	public void deleteSubmissionByIc(int id) {
-		
+	public void deleteSubmissionById(int id) {
+	
 	}
 
 	/**
