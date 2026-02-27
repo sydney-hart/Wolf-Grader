@@ -5,7 +5,7 @@ import edu.ncsu.csc216.wolf_grader.model.command.Command;
 /**
  * Represents a student Submission for an Assignment
  * 
- * TODO author
+ * @author Sydney Hart
  */
 public class Submission {
 

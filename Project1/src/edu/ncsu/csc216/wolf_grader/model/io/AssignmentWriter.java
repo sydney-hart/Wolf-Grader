@@ -7,7 +7,7 @@ import edu.ncsu.csc216.wolf_grader.model.manager.Assignment;
 /**
  * Writes a set of Assignment Records to a file
  * 
- * TODO author
+ * @author Sydney Hart
  */
 public class AssignmentWriter {
 

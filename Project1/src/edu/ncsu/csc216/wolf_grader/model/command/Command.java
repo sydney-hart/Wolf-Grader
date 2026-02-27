@@ -4,7 +4,7 @@ package edu.ncsu.csc216.wolf_grader.model.command;
  * Encapsulates the information about a user command that would lead to a 
  * transition in the submission FSM. Contains one inner enumeration, CommandValue
  * 
- * TODO author tag
+ * @author Sydney Hart
  */
 public class Command {
 

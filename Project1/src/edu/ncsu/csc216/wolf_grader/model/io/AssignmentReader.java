@@ -8,7 +8,7 @@ import edu.ncsu.csc216.wolf_grader.model.submission.Submission;
 /**
  * Reads Assignment records from text files and creates Assignment objects
  * 
- * TODO author
+ * @author Sydney Hart
  */
 public class AssignmentReader {
 

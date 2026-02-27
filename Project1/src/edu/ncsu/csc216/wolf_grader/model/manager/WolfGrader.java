@@ -7,7 +7,7 @@ import edu.ncsu.csc216.wolf_grader.model.submission.Submission;
  * Central controller of the WolfGrader system
  * Follows Singleton design pattern
  * 
- * TODO author
+ * @author Sydney Hart
  */
 public class WolfGrader {
 

@@ -8,7 +8,7 @@ import edu.ncsu.csc216.wolf_grader.model.submission.Submission;
 /**
  * Represents a single Assignment in the WolfGrader system
  * 
- * TODO author
+ * @author Sydney Hart
  */
 public class Assignment {
 
