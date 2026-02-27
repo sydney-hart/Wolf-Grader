@@ -4,6 +4,11 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the WolfGrader Class
+ * 
+ * @author Sydney Hart
+ */
 class WolfGraderTest {
 
 	@Test
