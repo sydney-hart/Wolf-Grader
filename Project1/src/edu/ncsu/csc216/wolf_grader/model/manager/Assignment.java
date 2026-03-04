@@ -1,5 +1,7 @@
 package edu.ncsu.csc216.wolf_grader.model.manager;
 
+import java.util.ArrayList;
+
 import java.util.List;
 
 import edu.ncsu.csc216.wolf_grader.model.command.Command;
@@ -26,11 +28,13 @@ public class Assignment {
 	 * @param assignmentName name of the assignment
 	 * @param assignmentCategory category of the assignment
 	 * @param maxPoints maximum number of points of possible
+	 * @throws IllegalArgumentException if one of the parameters is null, empty, or invalid
 	 */
 	public Assignment(String assignmentName, String assignmentCategory, int maxPoints) {
-		this.assignmentName = assignmentName;
-		this.assignmentCategory = assignmentCategory;
-		this.maxPoints = maxPoints;
+		setAssignmentName(assignmentName);
+		setAssignmentCategory(assignmentCategory);
+		setMaxPoints(maxPoints);
+		ArrayList<Submission> submissions = new ArrayList<Submission>();
 	}
 	
 	/**
@@ -44,8 +48,12 @@ public class Assignment {
 	 * Sets the assignment name
 	 * 
 	 * @param assignmentName the assignmentName to set
+	 * @throws IllegalArgumentException if assignment name is null or empty
 	 */
 	private void setAssignmentName(String assignmentName) {
+		if (assignmentName == null || assignmentName.isEmpty()) {
+			throw new IllegalArgumentException("Assignment cannot be created.");
+		}
 		this.assignmentName = assignmentName;
 	}
 
@@ -63,8 +71,12 @@ public class Assignment {
 	 * Sets the assignment category
 	 * 
 	 * @param assignmentCategory the assignmentCategory to set
+	 * @throws IllegalArgumentException if category name is null or empty
 	 */
 	private void setAssignmentCategory(String category) {
+		if (category == null || category.isEmpty()) {
+			throw new IllegalArgumentException("Assignment cannot be created.");
+		}
 		this.assignmentCategory = category;
 	}
 
@@ -81,8 +93,12 @@ public class Assignment {
 	 * Sets the maximum points for the assignment
 	 * 
 	 * @param maxPoints the maxPoints to set
+	 * @throws IllegalArgumentException if maxPoints is under 1 or over 100
 	 */
 	private void setMaxPoints(int maxPoints) {
+		if (maxPoints < 1 || maxPoints > 100) {
+			throw new IllegalArgumentException("Assignment cannot be created");
+		}
 		this.maxPoints = maxPoints;
 	}
 
@@ -103,7 +119,10 @@ public class Assignment {
 	 * @return the ID assigned to the new submission
 	 */
 	public int addSubmission(String name, String unityId) {
-		return 0;
+		Submission submission = new Submission(name, unityId);
+		addSubmission(submission);
+		int id = submission.getId();
+		return id;
 	}
 	
 	/**

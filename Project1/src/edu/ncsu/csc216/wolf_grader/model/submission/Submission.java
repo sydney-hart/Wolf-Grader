@@ -1,6 +1,7 @@
 package edu.ncsu.csc216.wolf_grader.model.submission;
 
 import edu.ncsu.csc216.wolf_grader.model.command.Command;
+import edu.ncsu.csc216.wolf_grader.model.command.Command.CommandValue;
 
 /**
  * Represents a student Submission for an Assignment
@@ -88,8 +89,7 @@ public class Submission {
 	 * @param unityId student unity ID
 	 */
 	public Submission(String name, String unityId) {
-		this.name = name;
-		this.unityId = unityId;
+		this(counter, "UPLOAD", name, unityId, false, "NONE", false, null, null);
 	}
 
 	/**
@@ -104,17 +104,19 @@ public class Submission {
 	 * @param published published flag
 	 * @param grader grader name
 	 * @param grade assigned grade
+	 * @throws IllegalArgumentException if any of the parameters are invalid values
 	 */
 	public Submission(int submissionId, String state, String name, String unityId,
 			boolean feedbackProcessed, String checkResult, boolean published, String grader, String grade) {
-		this.submissionId = submissionId;
-		this.name = name;
-		this.unityId = unityId;
-		//this.checkResult = checkResult;
-		this.feedbackProcessed = feedbackProcessed;
-		this.published = published;
-		this.grader = grader;
-		this.grade = grade;
+		setState(state);
+		setFeedbackProcessed(feedbackProcessed);
+		setName(name);
+		setUnityId(unityId);
+		setCheckResult(checkResult);
+		setPublished(published);
+		setGrader(grader);
+		setGrade(grade);
+		setId(submissionId);
 	}
 
 	/**
@@ -123,24 +125,59 @@ public class Submission {
 	 * @param submissionId the submissionId to set
 	 */
 	public void setId(int id) {
-		this.submissionId = id;
+		if (id >= counter) {
+			setCounter(id + 1);
+		}
+		this.submissionId = Submission.counter;
+		incrementCounter();
 	}
 	
 	/**
 	 * Sets the Submission state value
 	 * 
 	 * @param stateValue the stateValue to set
+	 * @throws IllegalArgumentException if stateValue String does not match one of 
+	 * the valid options
 	 */
 	public void setState(String stateValue) {
-		
+		stateValue = stateValue.toUpperCase();
+		switch (stateValue) {
+			case "UPLOAD": 
+				this.currentState = uploadState;
+				break;
+			case "FEEDBACK":
+				this.currentState = feedbackState;
+				break;
+			case "SUBMITTED":
+				this.currentState = submittedState;
+				break;
+			case "GRADE":
+				this.currentState = gradeState;
+				break;
+			case "REGRADE":
+				this.currentState = regradeState;
+				break;
+			case "CHECK":
+				this.currentState = checkState;
+				break;
+			case "RETURN":
+				this.currentState = returnState;
+				break;
+			default:
+				throw new IllegalArgumentException("Submission cannot be created.");
+		}
 	}
 	
 	/**
 	 * Sets the Submission name
 	 * 
 	 * @param name the name to set
+	 * @throws IllegalArgumentException if name is null or empty
 	 */
 	public void setName(String name) {
+		if (name ==  null || name.isEmpty()) {
+			throw new IllegalArgumentException("Submission cannot be created.");
+		}
 		this.name = name;
 	}
 	
@@ -148,8 +185,12 @@ public class Submission {
 	 * Sets the Submission unity ID
 	 * 
 	 * @param unityId the unityId to set
+	 * @throws IllegalArgumentException if unityId is null or empty
 	 */
 	public void setUnityId(String unityId) {
+		if (unityId ==  null || unityId.isEmpty()) {
+			throw new IllegalArgumentException("Submission cannot be created.");
+		}
 		this.unityId = unityId;
 	}
 	
@@ -166,9 +207,24 @@ public class Submission {
 	 * Sets the Submission plagiarism check result
 	 * 
 	 * @param checkResult the checkResult to set
+	 * @throws IllegalArgumentException if checkResult String does not match one of 
+	 * the valid options
 	 */
 	public void setCheckResult(String checkResult) {
-
+		checkResult = checkResult.toUpperCase();
+		switch (checkResult) {
+			case "PASS": 
+				this.checkResult = PlagiarismCheckResult.PASS;
+				break;
+			case "FAIL":
+				this.checkResult = PlagiarismCheckResult.FAIL;
+				break;
+			case "NONE":
+				this.checkResult = PlagiarismCheckResult.NONE;
+				break;
+			default:
+				throw new IllegalArgumentException("Submission cannot be created.");
+		}
 	}
 
 	/**
@@ -213,7 +269,7 @@ public class Submission {
 	 * @return
 	 */
 	public String getState() {
-		return "";
+		return currentState.toString();
 	}
 	
 	/**
@@ -240,7 +296,7 @@ public class Submission {
 	 * @return the checkResult
 	 */
 	public String getCheckResult() {
-		return "";
+		return checkResult.toString();
 	}
 	
 	/**
@@ -258,6 +314,9 @@ public class Submission {
 	 * @return the grader
 	 */
 	public String getGrader() {
+		if (grader == null) {
+			return "";
+		}
 		return grader;
 	}
 	
@@ -267,6 +326,9 @@ public class Submission {
 	 * @return the grade
 	 */
 	public String getGrade() {
+		if (grade == null) {
+			return "";
+		}
 		return grade;
 	}
 
@@ -283,7 +345,7 @@ public class Submission {
 	 * Increments the static submission ID counter
 	 */
 	public static void incrementCounter() {
-	
+		counter += 1;
 	}
 
 	/**
@@ -310,9 +372,11 @@ public class Submission {
 	 * Delegates transition logic to the current state
 	 * 
 	 * @param c Command triggering a state change
+	 * @throws UnsupportedOperationException if the Command is not
+	 * 		   valid for the current state
 	 */
 	public void update(Command c) {
-		
+		currentState.updateState(c);
 	}
 	
 	/**
@@ -354,11 +418,41 @@ public class Submission {
 		 * Updates the Submission based on a Command.
 		 * 
 		 * @param command the Command to process
+		 * @throws UnsupportedOperationException if the Command is not valid
+		 * 		   for the current state
+		 * @throws IllegalArgumentException if invalid info is entered
 		 */
 		@Override
 		public void updateState(Command command) {
-			// TODO Auto-generated method stub
+			if (command == null) {
+				throw new UnsupportedOperationException("Invalid command.");
+			}
 			
+			switch(command.getCommand()) {
+				case CommandValue.ASSIGN:
+					String graderId = command.getCommandInformation();
+					if (graderId == null || graderId.isEmpty() || feedbackProcessed) {
+						throw new IllegalArgumentException("Invalid information.");
+					}
+					grader = graderId;
+					currentState = feedbackState;
+					break;
+				case CommandValue.REUPLOAD:
+					if (!feedbackProcessed) {
+						throw new IllegalArgumentException("Invalid information.");
+					}
+					// Do we need these?
+					// feedbackProcessed = false;
+					// published  = false;
+					currentState = uploadState;
+				case CommandValue.SUBMIT:
+					if (!feedbackProcessed) {
+						throw new IllegalArgumentException("Invalid information.");
+					}
+					currentState = submittedState;
+				default:
+					throw new UnsupportedOperationException("Invalid command.");
+			}
 		}
 
 		/**
@@ -368,8 +462,7 @@ public class Submission {
 		 */
 		@Override
 		public String getStateName() {
-			// TODO Auto-generated method stub
-			return null;
+			return UPLOAD_NAME;
 		}
 		
 	}
@@ -383,11 +476,21 @@ public class Submission {
 		 * Updates the Submission based on a Command.
 		 * 
 		 * @param command the Command to process
+		 * @throws UnsupportedOperationException if the Command is not valid
+		 * 		   for the current state
 		 */
 		@Override
 		public void updateState(Command command) {
-			// TODO Auto-generated method stub
-			
+			if (command == null) {
+				throw new UnsupportedOperationException("Invalid command.");
+			}
+			switch(command.getCommand()) {
+				case CommandValue.SUBMIT:
+					currentState = uploadState;
+					break;
+				default:
+					throw new UnsupportedOperationException("Invalid command.");
+			}
 		}
 
 		/**
@@ -397,8 +500,7 @@ public class Submission {
 		 */
 		@Override
 		public String getStateName() {
-			// TODO Auto-generated method stub
-			return null;
+			return FEEDBACK_NAME;
 		}
 		
 	}
@@ -412,11 +514,27 @@ public class Submission {
 		 * Updates the Submission based on a Command.
 		 * 
 		 * @param command the Command to process
+		 * @throws UnsupportedOperationException if the Command is not valid
+		 * 		   for the current state
 		 */
 		@Override
 		public void updateState(Command command) {
-			// TODO Auto-generated method stub
+			if (command == null) {
+				throw new UnsupportedOperationException("Invalid command.");
+			}
 			
+			switch(command.getCommand()) {
+				case CommandValue.ASSIGN:
+					String graderId = command.getCommandInformation();
+					if (graderId == null || graderId.isEmpty()) {
+						throw new IllegalArgumentException("Invalid information.");
+					}
+					grader = graderId;
+					currentState = gradeState;
+					break;
+				default:
+					throw new UnsupportedOperationException("Invalid command");
+			}
 		}
 
 		/**
@@ -426,8 +544,7 @@ public class Submission {
 		 */
 		@Override
 		public String getStateName() {
-			// TODO Auto-generated method stub
-			return null;
+			return SUBMITTED_NAME;
 		}
 		
 	}
@@ -441,11 +558,48 @@ public class Submission {
 		 * Updates the Submission based on a Command.
 		 * 
 		 * @param command the Command to process
+		 * @throws UnsupportedOperationException if the Command is not valid
+		 * 		   for the current state
 		 */
 		@Override
 		public void updateState(Command command) {
-			// TODO Auto-generated method stub
-			
+			if (command == null) {
+				throw new UnsupportedOperationException("Invalid command.");
+			}
+			String assignmentGrade = "";
+			switch(command.getCommand()) {
+				case CommandValue.ANALYZE:
+					assignmentGrade = command.getCommandInformation();
+					if (!checkResult.equals(PlagiarismCheckResult.NONE)) {
+						throw new IllegalArgumentException("Invalid information.");
+					}
+					if (assignmentGrade.equals(GRADE_F_AIV_RETURN) || assignmentGrade.equals(GRADE_IN_RETURN)) {
+						throw new IllegalArgumentException("Invalid informtaion.");
+					}
+					grade = assignmentGrade;
+					currentState = checkState;
+					break;
+				case CommandValue.SUBMIT:
+					assignmentGrade = command.getCommandInformation();
+					if (checkResult.equals(PlagiarismCheckResult.NONE)) {
+						throw new IllegalArgumentException("Invalid information.");
+					}
+					switch (checkResult) {
+						case FAIL:
+							grade = assignmentGrade;
+							currentState = returnState;
+						case PASS:
+							if (assignmentGrade.equals(GRADE_F_AIV_RETURN) || assignmentGrade.equals(GRADE_IN_RETURN)) {
+								throw new IllegalArgumentException("Invalid informtaion.");
+							}
+							grade = assignmentGrade;
+							currentState = returnState;
+						default:
+							throw new IllegalArgumentException("Invalid information.");
+					}
+				default:
+					throw new UnsupportedOperationException("Invalid command");
+			}
 		}
 
 		/**
@@ -455,8 +609,7 @@ public class Submission {
 		 */
 		@Override
 		public String getStateName() {
-			// TODO Auto-generated method stub
-			return null;
+			return GRADE_NAME;
 		}
 		
 	}
@@ -470,9 +623,25 @@ public class Submission {
 		 * Updates the Submission based on a Command.
 		 * 
 		 * @param command the Command to process
+		 * @throws UnsupportedOperationException if the Command is not valid
+		 * 		   for the current state
 		 */
 		@Override
 		public void updateState(Command command) {
+			if (command == null) {
+				throw new UnsupportedOperationException("Invalid command.");
+			}
+			switch (command.getCommand()) {
+				case PASS:
+					setCheckResult("PASS");
+					currentState = returnState;
+				case FAIL:
+					setCheckResult("FAIL");
+					currentState = gradeState;
+				default:
+					throw new UnsupportedOperationException("Invalid command");
+			}
+			
 			// TODO Auto-generated method stub
 			
 		}
@@ -484,8 +653,7 @@ public class Submission {
 		 */
 		@Override
 		public String getStateName() {
-			// TODO Auto-generated method stub
-			return null;
+			return CHECK_NAME;
 		}
 		
 	}
@@ -498,12 +666,23 @@ public class Submission {
 		/**
 		 * Updates the Submission based on a Command.
 		 * 
-		 * @param command the Command to process
+		 * @param command the Command to 
+		 * @throws UnsupportedOperationException if the Command is not valid
+		 * 		   for the current state
 		 */
 		@Override
 		public void updateState(Command command) {
-			// TODO Auto-generated method stub
+			if (command == null) {
+				throw new UnsupportedOperationException("Invalid command.");
+			}
 			
+			switch(command.getCommand()) {
+				case PROCESS:
+					currentState = gradeState;
+					break;
+				default:
+					throw new UnsupportedOperationException("Invalid command");
+			}
 		}
 
 		/**
@@ -513,8 +692,7 @@ public class Submission {
 		 */
 		@Override
 		public String getStateName() {
-			// TODO Auto-generated method stub
-			return null;
+			return REGRADE_NAME;
 		}
 		
 	}
@@ -528,11 +706,44 @@ public class Submission {
 		 * Updates the Submission based on a Command.
 		 * 
 		 * @param command the Command to process
+		 * @throws UnsupportedOperationException if the Command is not valid
+		 * 		   for the current state
 		 */
 		@Override
 		public void updateState(Command command) {
-			// TODO Auto-generated method stub
-			
+			if (command == null) {
+				throw new UnsupportedOperationException("Invalid command.");
+			}
+			String assignmentGrade = "";
+			switch (command.getCommand()) {
+				case RESOLVE:
+					if (grade != "IN") {
+						throw new IllegalArgumentException("Invalid information.");
+					}
+					assignmentGrade = command.getCommandInformation();
+					if (assignmentGrade.equals(GRADE_IN_RETURN)) {
+						throw new IllegalArgumentException("Invalid informtaion.");
+					}
+					grade = assignmentGrade;
+					currentState = checkState;
+					break;
+				case REQUEST:
+					assignmentGrade = command.getCommandInformation();
+					if (assignmentGrade.equals(GRADE_IN_RETURN) || assignmentGrade.equals(GRADE_F_AIV_RETURN)) {
+						throw new IllegalArgumentException("Invalid informtaion.");
+					}
+					grade = assignmentGrade;
+					currentState = regradeState;
+				case PUBLISH:
+					assignmentGrade = command.getCommandInformation();
+					if (published || (assignmentGrade.equals(GRADE_IN_RETURN))) {
+						throw new IllegalArgumentException("Invalid information.");
+					}
+					grade = assignmentGrade;
+					currentState = returnState;
+				default:
+					throw new UnsupportedOperationException("Invalid command");
+			}
 		}
 
 		/**
@@ -542,8 +753,7 @@ public class Submission {
 		 */
 		@Override
 		public String getStateName() {
-			// TODO Auto-generated method stub
-			return null;
+			return RETURN_NAME;
 		}
 		
 	}
