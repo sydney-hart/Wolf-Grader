@@ -26,7 +26,10 @@ public class WolfGrader {
 	 * @return the single WolfGrader instance
 	 */
 	public static synchronized WolfGrader getInstance() {
-		return null;
+		if (singleton == null) {
+			singleton = new WolfGrader();
+		}
+		return singleton;
 	}
 	
 	/**

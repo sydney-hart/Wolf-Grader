@@ -26,8 +26,13 @@ public class AssignmentReader {
 	 * @param fileName file to read Assignment records from
 	 * @return a list of valid Assignments
 	 */
-	public static ArrayList<Assignment> readAssignmentFile(String fileName) throws FileNotFoundException {
-		Scanner fileReader = new Scanner(new FileInputStream(fileName));
+	public static ArrayList<Assignment> readAssignmentFile(String fileName) {
+		Scanner fileReader;
+		try {
+			fileReader = new Scanner(new FileInputStream(fileName));
+		} catch (FileNotFoundException e) {
+			throw new IllegalArgumentException("Unable to load file");
+		}
 		ArrayList<Assignment> assignments = new ArrayList<Assignment>();
 		String fileContents = "";
 		while (fileReader.hasNextLine()) {
