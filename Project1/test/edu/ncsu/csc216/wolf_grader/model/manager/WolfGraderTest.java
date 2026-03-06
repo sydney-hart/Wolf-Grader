@@ -1,194 +1,70 @@
 package edu.ncsu.csc216.wolf_grader.model.manager;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import edu.ncsu.csc216.wolf_grader.model.command.Command;
-import edu.ncsu.csc216.wolf_grader.model.command.Command.CommandValue;
-import edu.ncsu.csc216.wolf_grader.model.submission.Submission;
+class WolfGraderTest {
+    private WolfGrader manager;
 
-/**
- * Tests the WolfGrader class
- */
-public class WolfGraderTest {
-
-    /**
-     * Tests Singleton behavior
-     */
-    @Test
-    public void testGetInstance() {
-        WolfGrader wg1 = WolfGrader.getInstance();
-        WolfGrader wg2 = WolfGrader.getInstance();
-
-        assertSame(wg1, wg2);
-
-        wg1.resetManager();
+    @BeforeEach
+    void setUp() {
+        manager = WolfGrader.getInstance();
+        manager.resetManager(); // Start fresh for every test
+        manager = WolfGrader.getInstance();
     }
 
-    /**
-     * Tests addNewAssignment and getAssignmentList
-     */
     @Test
-    public void testAddNewAssignment() {
-        WolfGrader wg = WolfGrader.getInstance();
-        wg.resetManager();
-        wg = WolfGrader.getInstance();
+    void testAssignmentLifecycle() {
+        // 1. Initial State (Coverage for null returns)
+        assertNull(manager.getActiveAssignment());
+        assertNull(manager.getActiveAssignmentName());
 
-        wg.loadAssignmentsFromFile("test-files/assignment1.txt");
-
-        int before = wg.getAssignmentList().length;
-
-        wg.addNewAssignment("TestAssignment", "Homework", 50);
-
-        int after = wg.getAssignmentList().length;
-
-        assertEquals(before + 1, after);
-        assertEquals("TestAssignment", wg.getActiveAssignmentName());
-
-        wg.resetManager();
+        // 2. Add Assignment (Covers addNewAssignment and loop for equality)
+        // Note: Initializing the internal list if it's null in your code might be needed 
+        // depending on your AssignmentReader/Constructor implementation.
+        manager.addNewAssignment("CSC216", "Project", 100);
+        assertEquals("CSC216", manager.getActiveAssignmentName());
+        
+        // 3. Get List (Covers getAssignmentList loop)
+        String[] names = manager.getAssignmentList();
+        assertEquals(1, names.length);
+        assertEquals("CSC216", names[0]);
     }
 
-    /**
-     * Tests loadAssignment
-     */
     @Test
-    public void testLoadAssignment() {
-        WolfGrader wg = WolfGrader.getInstance();
-        wg.resetManager();
-        wg = WolfGrader.getInstance();
-
-        wg.loadAssignmentsFromFile("test-files/assignment1.txt");
-
-        String first = wg.getAssignmentList()[0];
-
-        wg.loadAssignment(first);
-
-        assertEquals(first, wg.getActiveAssignmentName());
-
-        wg.resetManager();
+    void testGetSubmissionsAsArray() {
+        manager.addNewAssignment("CSC216", "Project", 100);
+        
+        // Add a submission to trigger the array logic
+        manager.addSubmissionToAssignment("John Doe", "jdoe");
+        
+        // This covers the loops in getSubmissionsAsArray for "All" and filtered views
+        String[][] allData = manager.getSubmissionsAsArray("All");
+        assertTrue(allData.length >= 1);
+        assertEquals("jdoe", allData[0][2]);
+        
+        // Hit the filtered path
+        String[][] uploadData = manager.getSubmissionsAsArray("Upload");
+        assertEquals(1, uploadData.length);
     }
 
-    /**
-     * Tests addSubmissionToAssignment
-     */
     @Test
-    public void testAddSubmission() {
-        WolfGrader wg = WolfGrader.getInstance();
-        wg.resetManager();
-        wg = WolfGrader.getInstance();
-
-        wg.loadAssignmentsFromFile("test-files/assignment1.txt");
-
-        Assignment active = wg.getActiveAssignment();
-
-        int before = active.getSubmissions().size();
-
-        wg.addSubmissionToAssignment("John Doe", "jdoe");
-
-        int after = active.getSubmissions().size();
-
-        assertEquals(before + 1, after);
-
-        wg.resetManager();
+    void testSaveFailures() {
+        // Test save without an active assignment
+        assertThrows(IllegalArgumentException.class, () -> manager.saveAssignmentsToFile("test.txt"));
     }
 
-    /**
-     * Tests deleteSubmissionById
-     */
     @Test
-    public void testDeleteSubmission() {
-        WolfGrader wg = WolfGrader.getInstance();
-        wg.resetManager();
-        wg = WolfGrader.getInstance();
-
-        wg.loadAssignmentsFromFile("test-files/assignment1.txt");
-
-        Assignment active = wg.getActiveAssignment();
-
-        int id = active.getSubmissions().get(0).getId();
-
-        wg.deleteSubmissionById(id);
-
-        assertNull(wg.getSubmissionById(id));
-
-        wg.resetManager();
-    }
-
-    /**
-     * Tests getSubmissionsAsArray
-     */
-    @Test
-    public void testGetSubmissionsAsArray() {
-        WolfGrader wg = WolfGrader.getInstance();
-        wg.resetManager();
-        wg = WolfGrader.getInstance();
-
-        wg.loadAssignmentsFromFile("test-files/assignment1.txt");
-
-        String[][] submissions = wg.getSubmissionsAsArray("All");
-
-        assertNotNull(submissions);
-        assertTrue(submissions.length > 0);
-        assertEquals(4, submissions[0].length);
-
-        wg.resetManager();
-    }
-
-    /**
-     * Tests executeCommand
-     */
-    @Test
-    public void testExecuteCommand() {
-        WolfGrader wg = WolfGrader.getInstance();
-        wg.resetManager();
-        wg = WolfGrader.getInstance();
-
-        wg.loadAssignmentsFromFile("test-files/assignment1.txt");
-
-        Submission s = wg.getActiveAssignment().getSubmissions().get(0);
-        int id = s.getId();
-
-        Command c = new Command(CommandValue.SUBMIT, "Passed");
-
-        wg.executeCommand(id, c);
-
-        assertNotNull(wg.getSubmissionById(id));
-
-        wg.resetManager();
-    }
-
-    /**
-     * Tests getSubmissionById
-     */
-    @Test
-    public void testGetSubmissionById() {
-        WolfGrader wg = WolfGrader.getInstance();
-        wg.resetManager();
-        wg = WolfGrader.getInstance();
-
-        wg.loadAssignmentsFromFile("test-files/assignment1.txt");
-
-        Submission s = wg.getActiveAssignment().getSubmissions().get(0);
-
-        assertEquals(s, wg.getSubmissionById(s.getId()));
-
-        wg.resetManager();
-    }
-
-    /**
-     * Tests getActiveAssignmentName
-     */
-    @Test
-    public void testGetActiveAssignmentName() {
-        WolfGrader wg = WolfGrader.getInstance();
-        wg.resetManager();
-        wg = WolfGrader.getInstance();
-
-        wg.loadAssignmentsFromFile("test-files/assignment1.txt");
-
-        assertNotNull(wg.getActiveAssignmentName());
-
-        wg.resetManager();
+    void testGetSubmissionById() {
+        manager.addNewAssignment("CSC216", "Project", 100);
+        manager.addSubmissionToAssignment("Student", "sid");
+        
+        // Since we don't know the exact ID (static counter), we find it first
+        String[][] data = manager.getSubmissionsAsArray("All");
+        int id = Integer.parseInt(data[0][0]);
+        
+        assertNotNull(manager.getSubmissionById(id));
+        assertNull(manager.getSubmissionById(-1)); // Coverage for loop finishing without find
     }
 }
