@@ -1,6 +1,9 @@
 package edu.ncsu.csc216.wolf_grader.model.manager;
 
+import java.util.ArrayList;
+
 import edu.ncsu.csc216.wolf_grader.model.command.Command;
+
 import edu.ncsu.csc216.wolf_grader.model.submission.Submission;
 
 /**
@@ -13,11 +16,16 @@ public class WolfGrader {
 
 	/** Single interface of WolfGrader **/
 	private static WolfGrader singleton;
-
+	/** **/
+	private ArrayList<Assignment> assignments;
+	/** **/
+	private Assignment activeAssignment;
+	
 	/**
 	 * Constructs a WolfGrader object
 	 */
 	public WolfGrader() {
+		
 	}
 	
 	/**
