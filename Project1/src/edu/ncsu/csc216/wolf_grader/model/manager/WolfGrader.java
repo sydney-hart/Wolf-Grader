@@ -1,9 +1,11 @@
 package edu.ncsu.csc216.wolf_grader.model.manager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import edu.ncsu.csc216.wolf_grader.model.command.Command;
-
+import edu.ncsu.csc216.wolf_grader.model.io.AssignmentReader;
+import edu.ncsu.csc216.wolf_grader.model.io.AssignmentWriter;
 import edu.ncsu.csc216.wolf_grader.model.submission.Submission;
 
 /**
@@ -46,7 +48,8 @@ public class WolfGrader {
 	 * @param fileName name of the file to load
 	 */
 	public void loadAssignmentsFromFile(String fileName) {
-		
+		assignments = AssignmentReader.readAssignmentFile(fileName);
+		activeAssignment = assignments.get(0);
 	}
 	
 	/**
@@ -55,7 +58,10 @@ public class WolfGrader {
 	 * @param fileName name of the file to save to
 	 */
 	public void saveAssignmentsToFile(String fileName) {
-		
+		if (activeAssignment == null) {
+			throw new IllegalArgumentException("Unable to save file.");
+		}
+		AssignmentWriter.writeAssignmentsToFile(fileName, assignments);
 	}
 	
 	/**
@@ -66,7 +72,14 @@ public class WolfGrader {
 	 * @param maxPoints maximum number of points for the assignment
 	 */
 	public void addNewAssignment(String assignmentName, String assignmentCategory, int maxPoints) {
-		
+		Assignment assignment = new Assignment(assignmentName, assignmentCategory, maxPoints);
+		for (Assignment a: assignments) {
+			if (a.equals(assignment)) {
+				throw new IllegalArgumentException("Assignment not available");
+			}
+		}
+		assignments.add(assignment);
+		loadAssignment(assignmentName);
 	}
 	
 	/**
@@ -75,6 +88,17 @@ public class WolfGrader {
 	 * @param assignmentName name of the assignment to activate
 	 */
 	public void loadAssignment(String assignmentName) {
+		boolean found = false;
+		
+		for (Assignment a: assignments) {
+			if (a.getAssignmentName().equals(assignmentName)) {
+				activeAssignment = a;
+				activeAssignment.setSubmissionId();
+			}
+		}
+		if (!found) {
+			throw new IllegalArgumentException("Assignment not available.");
+		}
 		
 	}
 	
@@ -84,7 +108,7 @@ public class WolfGrader {
 	 * @return the active Assignment
 	 */
 	public Assignment getActiveAssignment() {
-		return null;
+		return activeAssignment;
 	}
 	
 	/**
@@ -93,7 +117,10 @@ public class WolfGrader {
 	 * @return active assignment name
 	 */
 	public String getActiveAssignmentName() {
-		return "";
+		if (activeAssignment != null) {
+			return activeAssignment.getAssignmentName();
+		}
+		return null;
 	}
 	
 	/**
@@ -102,7 +129,13 @@ public class WolfGrader {
 	 * @return an array of assignment names
 	 */
 	public String[] getAssignmentList() {
-		return null;
+		int length = assignments.size();
+		String[] assignmentNames = new String[length];
+		for (int i = 0; i < length; i++) {
+			String name = assignments.get(i).getAssignmentName();
+			assignmentNames[i] = name;
+		}
+		return assignmentNames;
 	}
 	
 	/**
@@ -112,7 +145,9 @@ public class WolfGrader {
 	 * @param unityId student's unity ID
 	 */
 	public void addSubmissionToAssignment(String name, String unityId) {
-		
+		if (activeAssignment != null) {
+			activeAssignment.addSubmission(name, unityId);
+		}
 	}
 	
 	/**
@@ -122,7 +157,10 @@ public class WolfGrader {
 	 * @param c the Command to execute
 	 */
 	public void executeCommand(int id, Command c) {
-		
+		if (activeAssignment != null) {
+			Submission submission = getSubmissionById(id);
+			submission.update(c);
+		}
 	}
 	
 	/**
@@ -131,7 +169,9 @@ public class WolfGrader {
 	 * @param id the submission ID
 	 */
 	public void deleteSubmissionById(int id) {
-		
+		if (activeAssignment != null) {
+			activeAssignment.deleteSubmissionById(id);
+		}
 	}
 	
 	/**
@@ -141,7 +181,22 @@ public class WolfGrader {
 	 * @return 2D array of submission data
 	 */
 	public String[][] getSubmissionsAsArray(String stateName) {
-		return null;
+		List<Submission> submissions = activeAssignment.getSubmissions();
+		List<Submission> filtered = new ArrayList<Submission>();
+		for (Submission s: submissions) {
+			if (stateName.equals("All") || s.getState().equals(stateName)) {
+				filtered.add(s);
+			}
+		}
+		String[][] displaySubmissions = new String[filtered.size()][4];
+		for (int i = 0; i < filtered.size(); i++) {
+			Submission submission = filtered.get(i);
+			displaySubmissions[i][0] = Integer.toString(submission.getId());
+			displaySubmissions[i][1] = submission.getState();
+			displaySubmissions[i][2] = submission.getUnityId();
+			displaySubmissions[i][3] = submission.getCheckResult();
+		}
+		return displaySubmissions;
 	}
 	
 	/**
@@ -151,6 +206,14 @@ public class WolfGrader {
 	 * @return matching Submission
 	 */
 	public Submission getSubmissionById(int id) {
+		if (activeAssignment != null) {
+			List<Submission> submissions = activeAssignment.getSubmissions();
+			for (Submission s: submissions) {
+				if (s.getId() == id) {
+					return s;
+				}
+			}
+		}
 		return null;
 	}
 	
@@ -158,6 +221,6 @@ public class WolfGrader {
 	 * Resets the WolfGrader manager to its initial state
 	 */
 	protected void resetManager() {
-		
+		singleton = null;
 	}
 }
