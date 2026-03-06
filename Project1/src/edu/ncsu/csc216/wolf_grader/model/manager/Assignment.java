@@ -20,6 +20,8 @@ public class Assignment {
 	private String assignmentCategory;
 	/** The maximum number of points possible for this assignment **/
 	private int maxPoints;
+	/** List of submissions for the assignment **/
+	private ArrayList<Submission> submissions;
 	
 	/**
 	 * Constructs an Assignment with the specified name, category, 
@@ -34,14 +36,20 @@ public class Assignment {
 		setAssignmentName(assignmentName);
 		setAssignmentCategory(assignmentCategory);
 		setMaxPoints(maxPoints);
-		ArrayList<Submission> submissions = new ArrayList<Submission>();
+		submissions = new ArrayList<Submission>();
 	}
 	
 	/**
 	 * Sets or updates the submission ID counter
 	 */
 	public void setSubmissionId() {
-		
+		int maxId = 0;
+		for (Submission s : submissions) {
+			if (s.getId() > maxId) {
+				maxId = s.getId();
+			}
+		}
+		Submission.setCounter(maxId + 1);
 	}
 	
 	/**
@@ -117,11 +125,12 @@ public class Assignment {
 	 * @param name the student name
 	 * @param unityId the student's unity ID
 	 * @return the ID assigned to the new submission
+	 * @throws IllegalArgumentException if there is already a submission with the same
+	 * 		   id number
 	 */
 	public int addSubmission(String name, String unityId) {
 		Submission submission = new Submission(name, unityId);
-		addSubmission(submission);
-		int id = submission.getId();
+		int id = addSubmission(submission);
 		return id;
 	}
 	
@@ -130,9 +139,20 @@ public class Assignment {
 	 * 
 	 * @param submission the Submission to add
 	 * @return the ID of the added submission
+	 * @throws IllegalArgumentException if there is already a submission with the same
+	 * 		   id number
 	 */
 	public int addSubmission(Submission submission) {
-		return 0;
+		for (int i = 0; i < submissions.size(); i++) {
+			if (submissions.get(i).getId() == submission.getId()) {
+				throw new IllegalArgumentException("Submission cannot be created.");
+			} else if (submissions.get(i).getId() > submission.getId()) {
+				submissions.add(i, submission);
+				return submission.getId();
+			}
+		}
+		submissions.add(submission);
+		return submission.getId();
 	}
 	
 	/**
@@ -141,7 +161,7 @@ public class Assignment {
 	 * @return a List of Submission objects
 	 */
 	public List<Submission> getSubmissions() {
-		return null;
+		return submissions;
 	}
 	
 	/**
@@ -151,6 +171,11 @@ public class Assignment {
 	 * @return the matching Submission
 	 */
 	public Submission getSubmissionById(int id) {
+		for (Submission s: submissions) {
+			if (s.getId() == id) {
+				return s;
+			}
+		}
 		return null;
 	}
 	
@@ -162,7 +187,11 @@ public class Assignment {
 	 * @param c the Command to execute
 	 */
 	public void executeCommand(int id, Command c) {
-		
+		for (Submission s: submissions) {
+			if (s.getId() == id) {
+				s.update(c);
+			}
+		}
 	}
 	
 	/**
@@ -171,7 +200,11 @@ public class Assignment {
 	 * @param id the submission ID
 	 */
 	public void deleteSubmissionById(int id) {
-	
+		for (int i = 0; i < submissions.size(); i++) {
+			if (submissions.get(i).getId() == id) {
+				submissions.remove(i);
+			}
+		}
 	}
 
 	/**
@@ -181,8 +214,8 @@ public class Assignment {
 	 */
 	@Override
 	public String toString() {
-		return "Assignment [assignmentName=" + assignmentName + ", assignmentCategory=" + assignmentCategory
-				+ ", maxPoints=" + maxPoints + "]";
+		return "# " + assignmentName + "," + assignmentCategory
+				+ "," + maxPoints;
 	}
 	
 }

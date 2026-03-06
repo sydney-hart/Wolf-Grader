@@ -362,9 +362,9 @@ public class Submission {
 	 */
 	@Override
 	public String toString() {
-		return "Submission [submissionId=" + submissionId + ", name=" + name + ", unityId=" + unityId + ", checkResult="
-				+ checkResult + ", feedbackProcessed=" + feedbackProcessed + ", published=" + published + ", grader="
-				+ grader + ", grade=" + grade + "]";
+		return "* " + submissionId + "," + name + "," + unityId + ","
+				+ feedbackProcessed + "," + checkResult + "," + published + ","
+				+ grader + "," + grade;
 	}
 	
 	/**

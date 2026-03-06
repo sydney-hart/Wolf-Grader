@@ -1,6 +1,11 @@
 package edu.ncsu.csc216.wolf_grader.model.io;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.NoSuchElementException;
+import java.util.Scanner;
 
 import edu.ncsu.csc216.wolf_grader.model.manager.Assignment;
 import edu.ncsu.csc216.wolf_grader.model.submission.Submission;
@@ -20,8 +25,24 @@ public class AssignmentReader {
 	 * @param fileName file to read Assignment records from
 	 * @return a list of valid Assignments
 	 */
-	public static ArrayList<Assignment> readAssignmentFile(String fileName) {
-		return null;
+	public static ArrayList<Assignment> readAssignmentFile(String fileName) throws FileNotFoundException {
+		Scanner fileReader = new Scanner(new FileInputStream(fileName));
+		ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+		String fileContents = "";
+		while (fileReader.hasNextLine()) {
+			String nextLine = fileReader.nextLine() + "\n";
+			fileContents += nextLine;
+		}
+		fileReader.close();
+		if (fileContents.charAt(0) != '#') {
+			return assignments;
+		}
+		String[] assignmentTokens = fileContents.split("\\r?\\n?[#]");
+		for (String s: assignmentTokens) {
+			Assignment assignment = processAssignment(s);
+			assignments.add(assignment);
+		}
+		return assignments;
 	}
 	
 	/**
@@ -32,7 +53,17 @@ public class AssignmentReader {
 	 * @return the constructed Assignment object
 	 */
 	private static Assignment processAssignment(String assignmentText) {
-		return null;
+		Scanner in = new Scanner(assignmentText);
+		String assignmentHeader = in.nextLine();
+		Assignment assignment = processAssignmentLine(assignmentHeader);
+		
+		while (in.hasNextLine()) {
+			String submissionLine = in.nextLine();
+			Submission s = processSubmission(submissionLine);
+			assignment.addSubmission(s);
+		}
+		in.close();
+		return assignment;
 	}
 	
 	/**
@@ -42,7 +73,20 @@ public class AssignmentReader {
 	 * @return Assignment object initialized with the data given
 	 */
 	private static Assignment processAssignmentLine(String assignmentLine) {
-		return null;
+		Scanner in = new Scanner(assignmentLine);
+		in.useDelimiter(",");
+		try {
+			String assignmentName = in.next().substring(2);
+			String assignmentCategory = in.next();
+			int maxPoints = in.nextInt();
+			Assignment assignment = new Assignment(assignmentName, assignmentCategory, maxPoints);
+			in.close();
+			return assignment;
+		} catch (InputMismatchException e) {
+			throw new IllegalArgumentException("Incorrect input.");
+		} catch (NoSuchElementException e) {
+			throw new IllegalArgumentException("Element not found.");
+		}
 	}
 	
 	/**
@@ -52,6 +96,26 @@ public class AssignmentReader {
 	 * @return Submission object created from data given
 	 */
 	private static Submission processSubmission(String submissionLine) {
-		return null;
+		Scanner in = new Scanner(submissionLine);
+		in.useDelimiter(",");
+		try {
+			String idString = in.next().substring(2);
+			int submissionId = Integer.parseInt(idString);
+			String state = in.next();
+			String name = in.next();
+			String unityId = in.next();
+			boolean feedbackProcessed = in.nextBoolean();
+			String checkResult = in.next();
+			boolean published = in.nextBoolean();
+			String graderId = in.next();
+			String grade = in.next();
+			Submission submission = new Submission(submissionId, state, name, unityId, feedbackProcessed, checkResult, published, graderId, grade);
+			in.close();
+			return submission;
+		} catch (InputMismatchException e) {
+			throw new IllegalArgumentException("Incorrect input.");
+		} catch (NoSuchElementException e) {
+			throw new IllegalArgumentException("Element not found.");
+		}
 	}
 }
