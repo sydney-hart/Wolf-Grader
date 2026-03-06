@@ -89,17 +89,16 @@ public class WolfGrader {
 	 */
 	public void loadAssignment(String assignmentName) {
 		boolean found = false;
-		
-		for (Assignment a: assignments) {
-			if (a.getAssignmentName().equals(assignmentName)) {
-				activeAssignment = a;
-				activeAssignment.setSubmissionId();
-			}
-		}
-		if (!found) {
-			throw new IllegalArgumentException("Assignment not available.");
-		}
-		
+	    for (Assignment a: assignments) {
+	        if (a.getAssignmentName().equals(assignmentName)) {
+	            activeAssignment = a;
+	            activeAssignment.setSubmissionId();
+	            found = true; // <--- ADD THIS LINE
+	        }
+	    }
+	    if (!found) {
+	        throw new IllegalArgumentException("Assignment not available.");
+	    }
 	}
 	
 	/**
