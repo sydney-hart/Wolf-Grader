@@ -26,27 +26,23 @@ public class AssignmentReader {
 	 * @return a list of valid Assignments
 	 */
 	public static ArrayList<Assignment> readAssignmentFile(String fileName) throws FileNotFoundException {
-		try {
-			Scanner fileReader = new Scanner(new FileInputStream(fileName));
-			ArrayList<Assignment> assignments = new ArrayList<Assignment>();
-			String fileContents = "";
-			while (fileReader.hasNextLine()) {
-				String nextLine = fileReader.nextLine() + "\n";
-				fileContents += nextLine;
-			}
-			fileReader.close();
-			if (fileContents.charAt(0) != '#') {
-				return assignments;
-			}
-			String[] assignmentTokens = fileContents.split("\\r?\\n?[#]");
-			for (String s: assignmentTokens) {
-				Assignment assignment = processAssignment(s);
-				assignments.add(assignment);
-			}
-			return assignments;
-		} catch (FileNotFoundException e) {
-			throw new IllegalArgumentException("Unable to load file.");
+		Scanner fileReader = new Scanner(new FileInputStream(fileName));
+		ArrayList<Assignment> assignments = new ArrayList<Assignment>();
+		String fileContents = "";
+		while (fileReader.hasNextLine()) {
+			String nextLine = fileReader.nextLine() + "\n";
+			fileContents += nextLine;
 		}
+		fileReader.close();
+		if (fileContents.charAt(0) != '#') {
+			return assignments;
+		}
+		String[] assignmentTokens = fileContents.split("\\r?\\n?[#]");
+		for (String s: assignmentTokens) {
+			Assignment assignment = processAssignment(s);
+			assignments.add(assignment);
+		}
+		return assignments;
 	}
 	
 	/**
