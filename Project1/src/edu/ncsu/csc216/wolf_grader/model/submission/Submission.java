@@ -125,10 +125,10 @@ public class Submission {
 	 * @param submissionId the submissionId to set
 	 */
 	public void setId(int id) {
+		this.submissionId = id;
 		if (id >= counter) {
 			setCounter(id + 1);
 		}
-		this.submissionId = Submission.counter;
 		incrementCounter();
 	}
 	
@@ -269,7 +269,7 @@ public class Submission {
 	 * @return
 	 */
 	public String getState() {
-		return currentState.toString();
+		return currentState.getStateName();
 	}
 	
 	/**

@@ -4,8 +4,6 @@ import java.io.FileInputStream;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 import edu.ncsu.csc216.wolf_grader.model.manager.Assignment;
@@ -27,28 +25,29 @@ public class AssignmentReader {
 	 * @return a list of valid Assignments
 	 */
 	public static ArrayList<Assignment> readAssignmentFile(String fileName) {
-		Scanner fileReader;
-		try {
-			fileReader = new Scanner(new FileInputStream(fileName));
-		} catch (FileNotFoundException e) {
-			throw new IllegalArgumentException("Unable to load file");
-		}
-		ArrayList<Assignment> assignments = new ArrayList<Assignment>();
-		String fileContents = "";
-		while (fileReader.hasNextLine()) {
-			String nextLine = fileReader.nextLine() + "\n";
-			fileContents += nextLine;
-		}
-		fileReader.close();
-		if (fileContents.charAt(0) != '#') {
-			return assignments;
-		}
-		String[] assignmentTokens = fileContents.split("\\r?\\n?[#]");
-		for (String s: assignmentTokens) {
-			Assignment assignment = processAssignment(s);
-			assignments.add(assignment);
-		}
-		return assignments;
+		ArrayList<Assignment> assignments = new ArrayList<>();
+	    String fileContents = "";
+	    try (Scanner fileReader = new Scanner(new FileInputStream(fileName))) {
+	        while (fileReader.hasNextLine()) {
+	            fileContents += fileReader.nextLine() + "\n";
+	        }
+	    } catch (FileNotFoundException e) {
+	        throw new IllegalArgumentException("Unable to load file");
+	    }
+	    if (fileContents.isEmpty() || !fileContents.trim().startsWith("#")) {
+	        return assignments;
+	    }
+	    String[] assignmentTokens = fileContents.split("\\r?\\n?#");
+	    for (String s : assignmentTokens) {
+	        if (!s.trim().isEmpty()) {
+	            try {
+	                Assignment assignment = processAssignment(s);
+	                assignments.add(assignment);
+	            } catch (Exception e) {
+	            }
+	        }
+	    }
+	    return assignments;
 	}
 	
 	/**
@@ -60,16 +59,23 @@ public class AssignmentReader {
 	 */
 	private static Assignment processAssignment(String assignmentText) {
 		Scanner in = new Scanner(assignmentText);
-		String assignmentHeader = in.nextLine();
-		Assignment assignment = processAssignmentLine(assignmentHeader);
-		
-		while (in.hasNextLine()) {
-			String submissionLine = in.nextLine();
-			Submission s = processSubmission(submissionLine);
-			assignment.addSubmission(s);
-		}
-		in.close();
-		return assignment;
+	    if (!in.hasNextLine()) {
+	        in.close();
+	        throw new IllegalArgumentException();
+	    }
+	    String header = in.nextLine();
+	    Assignment assignment = processAssignmentLine(header);
+	    while (in.hasNextLine()) {
+	        String subLine = in.nextLine().trim();
+	        if (!subLine.isEmpty()) {
+	            try {
+	                assignment.addSubmission(processSubmission(subLine));
+	            } catch (Exception e) {
+	            }
+	        }
+	    }
+	    in.close();
+	    return assignment;
 	}
 	
 	/**
@@ -79,20 +85,18 @@ public class AssignmentReader {
 	 * @return Assignment object initialized with the data given
 	 */
 	private static Assignment processAssignmentLine(String assignmentLine) {
-		Scanner in = new Scanner(assignmentLine);
-		in.useDelimiter(",");
-		try {
-			String assignmentName = in.next().substring(2);
-			String assignmentCategory = in.next();
-			int maxPoints = in.nextInt();
-			Assignment assignment = new Assignment(assignmentName, assignmentCategory, maxPoints);
-			in.close();
-			return assignment;
-		} catch (InputMismatchException e) {
-			throw new IllegalArgumentException("Incorrect input.");
-		} catch (NoSuchElementException e) {
-			throw new IllegalArgumentException("Element not found.");
-		}
+	    Scanner lineScanner = new Scanner(assignmentLine);
+	    lineScanner.useDelimiter(",");
+	    try {
+	        String name = lineScanner.next().trim();
+	        String category = lineScanner.next().trim();
+	        int maxPoints = lineScanner.nextInt();
+	        lineScanner.close();
+	        return new Assignment(name, category, maxPoints);
+	    } catch (Exception e) {
+	        lineScanner.close();
+	        throw new IllegalArgumentException("Invalid assignment header");
+	    }
 	}
 	
 	/**
@@ -102,26 +106,29 @@ public class AssignmentReader {
 	 * @return Submission object created from data given
 	 */
 	private static Submission processSubmission(String submissionLine) {
-		Scanner in = new Scanner(submissionLine);
-		in.useDelimiter(",");
-		try {
-			String idString = in.next().substring(2);
-			int submissionId = Integer.parseInt(idString);
-			String state = in.next();
-			String name = in.next();
-			String unityId = in.next();
-			boolean feedbackProcessed = in.nextBoolean();
-			String checkResult = in.next();
-			boolean published = in.nextBoolean();
-			String graderId = in.next();
-			String grade = in.next();
-			Submission submission = new Submission(submissionId, state, name, unityId, feedbackProcessed, checkResult, published, graderId, grade);
-			in.close();
-			return submission;
-		} catch (InputMismatchException e) {
-			throw new IllegalArgumentException("Incorrect input.");
-		} catch (NoSuchElementException e) {
-			throw new IllegalArgumentException("Element not found.");
-		}
+	    if (!submissionLine.startsWith("*")) {
+	        throw new IllegalArgumentException();
+	    }
+	    String data = submissionLine.substring(1).trim();
+	    Scanner lineScanner = new Scanner(data);
+	    lineScanner.useDelimiter(",");
+	    
+	    try {
+	        int id = lineScanner.nextInt();
+	        String state = lineScanner.next().trim();
+	        String name = lineScanner.next().trim();
+	        String unityId = lineScanner.next().trim();
+	        boolean feedback = lineScanner.nextBoolean();
+	        String result = lineScanner.next().trim();
+	        boolean published = lineScanner.nextBoolean();
+	        String grader = lineScanner.next().trim();
+	        String grade = lineScanner.next().trim();
+	        
+	        lineScanner.close();
+	        return new Submission(id, state, name, unityId, feedback, result, published, grader, grade);
+	    } catch (Exception e) {
+	        lineScanner.close();
+	        throw new IllegalArgumentException("Invalid submission line");
+	    }
 	}
 }
