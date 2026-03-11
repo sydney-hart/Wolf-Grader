@@ -383,7 +383,7 @@ public class Submission {
 	@Override
 	public String toString() {
 		return "* " + submissionId + "," + currentState.getStateName() + "," + name + "," + unityId + ","
-				+ feedbackProcessed + "," + checkResult + "," + published + ","
+				+ feedbackProcessed + "," + getCheckResult() + "," + published + ","
 				+ grader + "," + grade;
 	}
 	

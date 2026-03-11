@@ -109,7 +109,7 @@ public class AssignmentReader {
 	    if (!submissionLine.startsWith("*")) {
 	        throw new IllegalArgumentException();
 	    }
-	    String data = submissionLine.substring(1).trim();
+	    String data = submissionLine.substring(2);
 	    Scanner lineScanner = new Scanner(data);
 	    lineScanner.useDelimiter(",");
 	    
@@ -121,9 +121,14 @@ public class AssignmentReader {
 	        boolean feedback = lineScanner.nextBoolean();
 	        String result = lineScanner.next().trim();
 	        boolean published = lineScanner.nextBoolean();
-	        String grader = lineScanner.next().trim();
-	        String grade = lineScanner.next().trim();
-	        
+	        String grader = "";
+	        if (lineScanner.hasNext()) {
+	        	grader = lineScanner.next().trim();
+	        }
+	        String grade = "";
+	        if (lineScanner.hasNext()) {
+	        	grade = lineScanner.next().trim();
+	        }
 	        lineScanner.close();
 	        return new Submission(id, state, name, unityId, feedback, result, published, grader, grade);
 	    } catch (Exception e) {
