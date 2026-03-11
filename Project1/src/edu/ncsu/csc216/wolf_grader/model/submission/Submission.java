@@ -236,7 +236,11 @@ public class Submission {
 	 * @param grader the grader to set
 	 */
 	public void setGrader(String grader) {
-		this.grader = grader;
+		if (grader == null) {
+			this.grader = "";
+		} else {
+			this.grader = grader;
+		}
 	}
 
 	/**
@@ -245,7 +249,11 @@ public class Submission {
 	 * @param grade the grade to set
 	 */
 	public void setGrade(String grade) {
-		this.grade = grade;
+		if (grade == null) {
+			this.grade = "";
+		} else {
+			this.grade = grade;
+		}
 	}
 
 	/**

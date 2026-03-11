@@ -105,7 +105,7 @@ public class Assignment {
 	 */
 	private void setMaxPoints(int maxPoints) {
 		if (maxPoints < 1 || maxPoints > 100) {
-			throw new IllegalArgumentException("Assignment cannot be created");
+			throw new IllegalArgumentException("Assignment cannot be created.");
 		}
 		this.maxPoints = maxPoints;
 	}

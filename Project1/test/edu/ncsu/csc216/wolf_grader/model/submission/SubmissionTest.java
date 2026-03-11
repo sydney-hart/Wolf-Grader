@@ -8,6 +8,12 @@ import org.junit.jupiter.api.Test;
 import edu.ncsu.csc216.wolf_grader.model.command.Command;
 import edu.ncsu.csc216.wolf_grader.model.command.Command.CommandValue;
 
+/**
+ * Tests the Submission class, including all inner classes
+ * and interface
+ * 
+ * @author Sydney Hart
+ */
 public class SubmissionTest {
 
 	/** Submission ID **/
