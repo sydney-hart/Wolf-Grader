@@ -89,7 +89,7 @@ public class Submission {
 	 * @param unityId student unity ID
 	 */
 	public Submission(String name, String unityId) {
-		this(counter, "UPLOAD", name, unityId, false, "NONE", false, null, null);
+		this(counter, "UPLOAD", name, unityId, false, PC_NONE, false, null, null);
 	}
 
 	/**
@@ -125,9 +125,13 @@ public class Submission {
 	 * @param submissionId the submissionId to set
 	 */
 	public void setId(int id) {
-		this.submissionId = id;
-		if (id >= counter) {
-			setCounter(id + 1);
+		if (id == 0) {
+			this.submissionId = 1;
+		} else {
+			this.submissionId = id;
+			if (id >= counter) {
+				setCounter(id);
+			}
 		}
 		incrementCounter();
 	}
@@ -211,15 +215,14 @@ public class Submission {
 	 * the valid options
 	 */
 	public void setCheckResult(String checkResult) {
-		checkResult = checkResult.toUpperCase();
 		switch (checkResult) {
-			case "PASS": 
+			case PC_PASS: 
 				this.checkResult = PlagiarismCheckResult.PASS;
 				break;
-			case "FAIL":
+			case PC_FAIL:
 				this.checkResult = PlagiarismCheckResult.FAIL;
 				break;
-			case "NONE":
+			case PC_NONE:
 				this.checkResult = PlagiarismCheckResult.NONE;
 				break;
 			default:
@@ -296,7 +299,16 @@ public class Submission {
 	 * @return the checkResult
 	 */
 	public String getCheckResult() {
-		return checkResult.toString();
+		switch (checkResult) {
+			case PlagiarismCheckResult.PASS: 
+				return PC_PASS;
+			case PlagiarismCheckResult.FAIL:
+				return PC_FAIL;
+			case PlagiarismCheckResult.NONE:
+				return PC_NONE;
+			default:
+				return "";
+	}
 	}
 	
 	/**
@@ -362,7 +374,7 @@ public class Submission {
 	 */
 	@Override
 	public String toString() {
-		return "* " + submissionId + "," + name + "," + unityId + ","
+		return "* " + submissionId + "," + currentState.getStateName() + "," + name + "," + unityId + ","
 				+ feedbackProcessed + "," + checkResult + "," + published + ","
 				+ grader + "," + grade;
 	}
@@ -441,15 +453,14 @@ public class Submission {
 					if (!feedbackProcessed) {
 						throw new IllegalArgumentException("Invalid information.");
 					}
-					// Do we need these?
-					// feedbackProcessed = false;
-					// published  = false;
 					currentState = uploadState;
-				case CommandValue.SUBMIT:
+					break;
+				case CommandValue.MOVE:
 					if (!feedbackProcessed) {
 						throw new IllegalArgumentException("Invalid information.");
 					}
 					currentState = submittedState;
+					break;
 				default:
 					throw new UnsupportedOperationException("Invalid command.");
 			}
@@ -485,7 +496,8 @@ public class Submission {
 				throw new UnsupportedOperationException("Invalid command.");
 			}
 			switch(command.getCommand()) {
-				case CommandValue.SUBMIT:
+				case CommandValue.PROVIDE:
+					setFeedbackProcessed(true);
 					currentState = uploadState;
 					break;
 				default:
@@ -588,15 +600,18 @@ public class Submission {
 						case FAIL:
 							grade = assignmentGrade;
 							currentState = returnState;
+							break;
 						case PASS:
 							if (assignmentGrade.equals(GRADE_F_AIV_RETURN) || assignmentGrade.equals(GRADE_IN_RETURN)) {
 								throw new IllegalArgumentException("Invalid informtaion.");
 							}
 							grade = assignmentGrade;
 							currentState = returnState;
+							break;
 						default:
 							throw new IllegalArgumentException("Invalid information.");
 					}
+					break;
 				default:
 					throw new UnsupportedOperationException("Invalid command");
 			}
@@ -620,7 +635,7 @@ public class Submission {
 	private class CheckState implements SubmissionState {
 
 		/**
-		 * Updates the Submission based on a Command.
+		 * Updates the Submission based on a Comm)and.
 		 * 
 		 * @param command the Command to process
 		 * @throws UnsupportedOperationException if the Command is not valid
@@ -633,11 +648,13 @@ public class Submission {
 			}
 			switch (command.getCommand()) {
 				case PASS:
-					setCheckResult("PASS");
+					setCheckResult(PC_PASS);
 					currentState = returnState;
+					break;
 				case FAIL:
-					setCheckResult("FAIL");
+					setCheckResult(PC_FAIL);
 					currentState = gradeState;
+					break;
 				default:
 					throw new UnsupportedOperationException("Invalid command");
 			}
@@ -717,7 +734,7 @@ public class Submission {
 			String assignmentGrade = "";
 			switch (command.getCommand()) {
 				case RESOLVE:
-					if (grade != "IN") {
+					if (!(grade.equals("IN"))) {
 						throw new IllegalArgumentException("Invalid information.");
 					}
 					assignmentGrade = command.getCommandInformation();
@@ -725,22 +742,22 @@ public class Submission {
 						throw new IllegalArgumentException("Invalid informtaion.");
 					}
 					grade = assignmentGrade;
-					currentState = checkState;
+					setCheckResult(PC_PASS);
+					currentState = returnState;
 					break;
 				case REQUEST:
-					assignmentGrade = command.getCommandInformation();
-					if (assignmentGrade.equals(GRADE_IN_RETURN) || assignmentGrade.equals(GRADE_F_AIV_RETURN)) {
+					if (grade.equals(GRADE_IN_RETURN) || grade.equals(GRADE_F_AIV_RETURN)) {
 						throw new IllegalArgumentException("Invalid informtaion.");
 					}
-					grade = assignmentGrade;
 					currentState = regradeState;
+					break;
 				case PUBLISH:
-					assignmentGrade = command.getCommandInformation();
-					if (published || (assignmentGrade.equals(GRADE_IN_RETURN))) {
+					if (published || grade.equals(GRADE_IN_RETURN)) {
 						throw new IllegalArgumentException("Invalid information.");
 					}
-					grade = assignmentGrade;
+					setPublished(true);
 					currentState = returnState;
+					break;
 				default:
 					throw new UnsupportedOperationException("Invalid command");
 			}

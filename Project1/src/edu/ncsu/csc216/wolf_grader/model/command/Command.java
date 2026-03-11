@@ -11,16 +11,15 @@ import edu.ncsu.csc216.wolf_grader.model.submission.Submission;
 public class Command {
 
 	/** The type of command being issued **/
-	private CommandValue command;
+	private CommandValue commandValue;
 	/** Additional information associated with the command **/
 	private String commandInformation;
-	/** Enumeration of all possible command types that can trigger
-	 * state transitions in Submission 
-	 **/
+	/** Enumeration of all possible command types that can a trigger state transitions in Submission **/
 	public enum CommandValue { ASSIGN, MOVE, PROVIDE, REUPLOAD, SUBMIT, ANALYZE, RESOLVE, PROCESS, REQUEST, PUBLISH, PASS, FAIL }
 
 	private String[] submitGrades = {Submission.GRADE_A_RETURN, Submission.GRADE_B_RETURN, Submission.GRADE_C_RETURN, Submission.GRADE_F_RETURN, Submission.GRADE_IN_RETURN, 
 			Submission.GRADE_F_AIV_RETURN};
+	
 	private String[] grades = {Submission.GRADE_A_RETURN, Submission.GRADE_B_RETURN, Submission.GRADE_C_RETURN, Submission.GRADE_F_RETURN, Submission.GRADE_F_AIV_RETURN};
 	/**
 	 * Constructs a Command with a specified type and associated information
@@ -29,15 +28,16 @@ public class Command {
 	 * @param commandInformation additional information needed for the command
 	 * @throws IllegalArgumentException if command is not a valid parameter
 	 */
-	public Command(CommandValue command, String commandInformation) {
-		if (command == null) {
+	public Command(CommandValue commandValue, String commandInformation) {
+		if (commandValue == null) {
 			throw new IllegalArgumentException("Invalid information.");
 		}
-		switch (command) {
+		switch (commandValue) {
 			case ASSIGN:
 				if (commandInformation == null) {
 					throw new IllegalArgumentException("Invalid information.");
 				}
+				break;
 			case RESOLVE:
 				if (commandInformation == null) {
 					throw new IllegalArgumentException("Invalid information.");
@@ -89,7 +89,7 @@ public class Command {
 			default:
 				break; 
 		}
-		this.command = command;
+		this.commandValue = commandValue;
 		this.commandInformation = commandInformation;
 	}
 	
@@ -99,7 +99,7 @@ public class Command {
 	 * @return the CommandVlaue representing the action
 	 */
 	public CommandValue getCommand() {
-		return command;
+		return commandValue;
 	}
 
 	/**

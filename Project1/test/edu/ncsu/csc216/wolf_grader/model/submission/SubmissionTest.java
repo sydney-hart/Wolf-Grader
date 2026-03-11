@@ -10,25 +10,54 @@ import edu.ncsu.csc216.wolf_grader.model.command.Command.CommandValue;
 
 public class SubmissionTest {
 
-    @BeforeEach
-    public void resetCounter() {
-        Submission.setCounter(1);
-    }
+	/** Submission ID **/
+	private static final int SUBMISSION_ID = 5;
+	/** Initial Submission state **/
+	private static final String STATE = "Upload";
+	/** Student's name **/
+	private static final String NAME = "Sydney Hart";
+	/** Student's unity id **/
+	private static final String UNITY_ID = "sehart";
+	/** Initial Plagiarism check value**/
+	private static final String CHECK_RESULT = "Not Done";
+	/** Initial feedback processed value **/
+	private static final boolean FEEDBACK_PROCESSED = false;
+	/** Initial published value **/
+	private static final boolean PUBLISHED = false;
+	/** Submission grader **/
+	private static final String GRADER = "sesmith";
+	/** Submission grade **/
+	private static final String GRADE = "A";
+	
+	
+	/**
+	 * Resets the counter back to zero when tests are re-run
+	 * 
+	 * @throws Exception throws an exception if there are any errors with the counter
+	 */
+	@BeforeEach
+	public void setUp() throws Exception {
+		//Reset the counter at the beginning of every test.
+		Submission.setCounter(0);
+	}
 
     /**
      * Test constructor with name and unityId
      */
     @Test
     public void testSubmissionConstructorSimple() {
-        Submission s = new Submission("John Doe", "jdoe");
-
-        assertEquals(1, s.getId());
-        assertEquals("John Doe", s.getName());
-        assertEquals("jdoe", s.getUnityId());
-        assertEquals("UPLOAD", s.getState().toUpperCase());
-        assertEquals("NONE", s.getCheckResult());
-        assertFalse(s.isFeedbackProcessed());
-        assertFalse(s.isPublished());
+        Submission s = assertDoesNotThrow(
+        		() -> new Submission(NAME, UNITY_ID));
+        
+        assertAll("Submission",
+        		() -> assertEquals(1, s.getId(), "incorrect submission ID"),
+        		() -> assertEquals("Upload", s.getState(), "incorrect state"),
+        		() -> assertEquals(NAME, s.getName(), "incorrect name"),
+        		() -> assertEquals(UNITY_ID, s.getUnityId(), "incorrect unity ID"),
+        		() -> assertFalse(s.isFeedbackProcessed(), "incorrect feedback processed"),
+        		() -> assertEquals("Not Done", s.getCheckResult(), "incorrect plagiarism check result"),
+        		() -> assertEquals("", s.getGrader(), "incorrect grader"),
+        		() -> assertEquals("", s.getGrade(), "incorrect grade"));
     }
 
     /**
@@ -36,15 +65,19 @@ public class SubmissionTest {
      */
     @Test
     public void testSubmissionConstructorFull() {
-        Submission s = new Submission(5, "UPLOAD", "Jane Doe", "jdoe",
-                false, "PASS", false, "grader1", "A");
-
-        assertEquals(5, s.getId());
-        assertEquals("Jane Doe", s.getName());
-        assertEquals("jdoe", s.getUnityId());
-        assertEquals("PASS", s.getCheckResult());
-        assertEquals("grader1", s.getGrader());
-        assertEquals("A", s.getGrade());
+    	Submission s = assertDoesNotThrow(
+        		() -> new Submission(SUBMISSION_ID, STATE, NAME, UNITY_ID, FEEDBACK_PROCESSED,
+        				CHECK_RESULT, PUBLISHED, GRADER, GRADE));
+        
+        assertAll("Submission",
+        		() -> assertEquals(SUBMISSION_ID, s.getId(), "incorrect submission ID"),
+        		() -> assertEquals(STATE, s.getState(), "incorrect state"),
+        		() -> assertEquals(NAME, s.getName(), "incorrect name"),
+        		() -> assertEquals(UNITY_ID, s.getUnityId(), "incorrect unity ID"),
+        		() -> assertEquals(FEEDBACK_PROCESSED, s.isFeedbackProcessed(), "incorrect feedback processed"),
+        		() -> assertEquals(CHECK_RESULT, s.getCheckResult(), "incorrect plagiarism check result"),
+        		() -> assertEquals(GRADER, s.getGrader(), "incorrect grader"),
+        		() -> assertEquals(GRADE, s.getGrade(), "incorrect grade"));
     }
 
     /**
@@ -52,13 +85,9 @@ public class SubmissionTest {
      */
     @Test
     public void testSetNameInvalid() {
-
-        Submission s = new Submission("John Doe", "jdoe");
-
-        Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            s.setName(null);
-        });
-
+        Submission s = new Submission(NAME, UNITY_ID);
+        Exception e = assertThrows(IllegalArgumentException.class, () ->
+            s.setName(null));
         assertEquals("Submission cannot be created.", e.getMessage());
     }
 
@@ -67,13 +96,9 @@ public class SubmissionTest {
      */
     @Test
     public void testSetUnityIdInvalid() {
-
-        Submission s = new Submission("John Doe", "jdoe");
-
-        Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            s.setUnityId("");
-        });
-
+        Submission s = new Submission(NAME, UNITY_ID);
+        Exception e = assertThrows(IllegalArgumentException.class, () ->
+            s.setUnityId(""));
         assertEquals("Submission cannot be created.", e.getMessage());
     }
 
@@ -82,11 +107,9 @@ public class SubmissionTest {
      */
     @Test
     public void testInvalidState() {
-
-        Exception e = assertThrows(IllegalArgumentException.class, () -> {
-            new Submission(1, "INVALID", "John", "jdoe", false, "NONE", false, null, null);
-        });
-
+        Exception e = assertThrows(IllegalArgumentException.class, () -> 
+            new Submission(SUBMISSION_ID, "INVALID", NAME, UNITY_ID, FEEDBACK_PROCESSED, 
+            		CHECK_RESULT, PUBLISHED, GRADER, GRADE));
         assertEquals("Submission cannot be created.", e.getMessage());
     }
 
@@ -95,12 +118,13 @@ public class SubmissionTest {
      */
     @Test
     public void testSetCheckResult() {
-
-        Submission s = new Submission("John Doe", "jdoe");
-
-        s.setCheckResult("PASS");
-
-        assertEquals("PASS", s.getCheckResult());
+        Submission s = new Submission(NAME, UNITY_ID);
+        s.setCheckResult("Passed");
+        assertEquals("Passed", s.getCheckResult());
+        s.setCheckResult("Failed");
+        assertEquals("Failed", s.getCheckResult());
+        s.setCheckResult("Not Done");
+        assertEquals("Not Done", s.getCheckResult());
     }
 
     /**
@@ -108,34 +132,10 @@ public class SubmissionTest {
      */
     @Test
     public void testInvalidCheckResult() {
-
-        Submission s = new Submission("John Doe", "jdoe");
-
-        assertThrows(IllegalArgumentException.class, () -> {
-            s.setCheckResult("BAD");
-        });
-    }
-
-    /**
-     * Test grader getter when null
-     */
-    @Test
-    public void testGetGraderNull() {
-
-        Submission s = new Submission("John Doe", "jdoe");
-
-        assertEquals("", s.getGrader());
-    }
-
-    /**
-     * Test grade getter when null
-     */
-    @Test
-    public void testGetGradeNull() {
-
-        Submission s = new Submission("John Doe", "jdoe");
-
-        assertEquals("", s.getGrade());
+        Submission s = new Submission(NAME, UNITY_ID);
+        Exception e = assertThrows(IllegalArgumentException.class, () ->
+            s.setCheckResult("BAD"));
+        assertEquals("Submission cannot be created.", e.getMessage());
     }
 
     /**
@@ -143,108 +143,89 @@ public class SubmissionTest {
      */
     @Test
     public void testToString() {
+        Submission s = new Submission(SUBMISSION_ID, STATE, NAME, UNITY_ID, FEEDBACK_PROCESSED,
+				CHECK_RESULT, PUBLISHED, GRADER, GRADE);
 
-        Submission s = new Submission(3, "UPLOAD", "John Doe", "jdoe",
-                false, "NONE", false, null, null);
-
-        String expected = "* 3,John Doe,jdoe,false,NONE,false,null,null";
+        String expected = "* 5,Upload,Sydney Hart,sehart,false,NONE,false,sesmith,A";
 
         assertEquals(expected, s.toString());
     }
-
+    
     /**
      * Test update with null command
      */
     @Test
     public void testUpdateNullCommand() {
-
-        Submission s = new Submission("John Doe", "jdoe");
-
-        assertThrows(UnsupportedOperationException.class, () -> {
-            s.update(null);
-        });
-    }
-
-    /**
-     * Test basic state transition (Upload -> Feedback)
-     */
-    @Test
-    public void testAssignCommand() {
-
-        Submission s = new Submission("John Doe", "jdoe");
-
-        Command c = new Command(CommandValue.ASSIGN, "grader1");
-
-        s.update(c);
-
-        assertEquals("Feedback", s.getState());
-        assertEquals("grader1", s.getGrader());
+        Submission s = new Submission(NAME, UNITY_ID);
+        Exception e = assertThrows(UnsupportedOperationException.class, () -> 
+            s.update(null));
+        assertEquals("Invalid command.", e.getMessage());
     }
     
+    /**
+     * Tests that Submission can correctly change states
+     */
     @Test
-    void testSubmittedAndGradeState() {
-        // Start in SUBMITTED state using the complex constructor
-        Submission s = new Submission(1, "SUBMITTED", "Name", "id", false, "NONE", false, null, null);
-        assertEquals("Submitted", s.getState());
-
-        // 1. Test SubmittedState -> GradeState
-        s.update(new Command(CommandValue.ASSIGN, "grader1"));
-        assertEquals("Grade", s.getState());
-        assertEquals("grader1", s.getGrader());
-
-        // 2. Test GradeState -> CheckState (ANALYZE command)
-        // Note: checkResult must be NONE for this to work
-        s.update(new Command(CommandValue.ANALYZE, "B"));
-        assertEquals("Check", s.getState());
-        assertEquals("B", s.getGrade());
+    public void testStateChangesReviseA() {
+    	Submission s = new Submission(SUBMISSION_ID, STATE, NAME, UNITY_ID, FEEDBACK_PROCESSED,
+				CHECK_RESULT, PUBLISHED, GRADER, GRADE);
+    	assertEquals("Upload", s.getState(), "incorrect state: UPLOAD");
+    	
+    	Command assign = new Command(CommandValue.ASSIGN, "sesmith");
+    	s.update(assign);
+    	assertEquals("Feedback", s.getState(), "incorrect state: FEEDBACK");
+    	
+    	Command provide = new Command(CommandValue.PROVIDE, null);
+    	s.update(provide);
+    	assertEquals("Upload", s.getState(), "incorrect state: Upload2");
+    	assertTrue(s.isFeedbackProcessed());
+    	
+    	Command reupload = new Command(CommandValue.REUPLOAD, null);
+    	s.update(reupload);
+    	assertEquals("Upload", s.getState(), "incorrect state: Reupload");
+    	
+    	Command move = new Command(CommandValue.MOVE, null);
+    	s.update(move);
+    	assertEquals("Submitted", s.getState(), "incorrect state: Submitted");
+    	
+    	s.update(assign);
+    	assertEquals("Grade", s.getState(), "incorrect State: Grade");
+    	
+    	Command analyze = new Command(CommandValue.ANALYZE, "A");
+    	s.update(analyze);
+    	assertEquals("Check", s.getState(), "incorrect state: Check");
+    	
+    	Command fail = new Command(CommandValue.FAIL, null);
+    	s.update(fail);
+    	assertEquals("Grade", s.getState(), "incorrect state: Grade2");
+    	assertEquals("Failed", s.getCheckResult(), "incorrect check result");
+    	
+    	Command submit = new Command(CommandValue.SUBMIT, "IN");
+    	s.update(submit);
+    	assertEquals("Return", s.getState(), "incorrect state: Return");
+    	
+    	Command resolve = new Command(CommandValue.RESOLVE, "B");
+    	s.update(resolve);
+    	assertEquals("Return", s.getState(), "incorrect state: Return2");
+    	assertEquals("Passed", s.getCheckResult(), "incorrect check result");
+    	
+    	Command request = new Command(CommandValue.REQUEST, null);
+    	s.update(request);
+    	assertEquals("Regrade", s.getState(), "incorrect state: Regrade");
+    	
+    	Command process = new Command(CommandValue.PROCESS, null);
+    	s.update(process);
+    	assertEquals("Grade", s.getState(), "incorrect state: Grade3");
+    	
+    	Command submitUpdate = new Command(CommandValue.SUBMIT, "A");
+    	s.update(submitUpdate);
+    	assertEquals("Return", s.getState(), "incorrect state: Return3");
+    	assertEquals("A", s.getGrade(), "incorrect grade");
+    	
+    	Command publish = new Command(CommandValue.PUBLISH, null);
+    	s.update(publish);
+    	assertEquals("Return", s.getState(), "incorrect state: Return4");
+    	assertTrue(s.isPublished());
     }
 
-    @Test
-    void testCheckAndReturnState() {
-        // Start in CHECK state
-        Submission s = new Submission(1, "CHECK", "Name", "id", false, "NONE", false, "grader1", "B");
-        
-        // 1. Test CheckState -> ReturnState (PASS command)
-        s.update(new Command(CommandValue.PASS, null));
-        assertEquals("Return", s.getState());
-        assertEquals("PASS", s.getCheckResult());
-
-        // 2. Test ReturnState -> RegradeState (REQUEST command)
-        s.update(new Command(CommandValue.REQUEST, "A"));
-        assertEquals("Regrade", s.getState());
-        assertEquals("A", s.getGrade());
-    }
-
-    @Test
-    void testRegradeState() {
-        // Start in REGRADE state
-        Submission s = new Submission(1, "REGRADE", "Name", "id", false, "PASS", false, "grader1", "A");
-        
-        // 1. Test RegradeState -> GradeState (PROCESS command)
-        s.update(new Command(CommandValue.PROCESS, null));
-        assertEquals("Grade", s.getState());
-    }
-
-    @Test
-    void testGradeStateComplexTransitions() {
-        // Test the 'SUBMIT' branch in GradeState which requires checkResult != NONE
-        Submission s = new Submission(1, "GRADE", "Name", "id", false, "FAIL", false, "grader1", "C");
-        
-        // GradeState -> ReturnState (via SUBMIT)
-        s.update(new Command(CommandValue.SUBMIT, "F"));
-        assertEquals("Return", s.getState());
-        assertEquals("F", s.getGrade());
-    }
-
-    @Test
-    void testStateErrorBranches() {
-        Submission s = new Submission(1, "SUBMITTED", "Name", "id", false, "NONE", false, null, null);
-        
-        // Trigger null command exception (present in all updateState methods)
-        assertThrows(UnsupportedOperationException.class, () -> s.update(null));
-
-        // Trigger Invalid command for current state (SubmittedState only likes ASSIGN)
-        Command invalid = new Command(CommandValue.PROCESS, null);
-        assertThrows(UnsupportedOperationException.class, () -> s.update(invalid));
-    }
 }
