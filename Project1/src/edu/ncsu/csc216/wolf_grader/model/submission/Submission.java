@@ -742,7 +742,7 @@ public class Submission {
 			String assignmentGrade = "";
 			switch (command.getCommand()) {
 				case RESOLVE:
-					if (!(grade.equals("IN"))) {
+					if (!grade.equals("IN")) {
 						throw new IllegalArgumentException("Invalid information.");
 					}
 					assignmentGrade = command.getCommandInformation();

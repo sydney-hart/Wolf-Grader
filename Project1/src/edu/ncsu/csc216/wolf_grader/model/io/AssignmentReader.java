@@ -44,6 +44,7 @@ public class AssignmentReader {
 	                Assignment assignment = processAssignment(s);
 	                assignments.add(assignment);
 	            } catch (Exception e) {
+	            	throw new IllegalArgumentException("Unable to load file");
 	            }
 	        }
 	    }
@@ -71,6 +72,8 @@ public class AssignmentReader {
 	            try {
 	                assignment.addSubmission(processSubmission(subLine));
 	            } catch (Exception e) {
+	            	in.close();
+	            	throw new IllegalArgumentException("Unable to process assignment");
 	            }
 	        }
 	    }

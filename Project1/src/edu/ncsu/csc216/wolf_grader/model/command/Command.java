@@ -16,10 +16,10 @@ public class Command {
 	private String commandInformation;
 	/** Enumeration of all possible command types that can a trigger state transitions in Submission **/
 	public enum CommandValue { ASSIGN, MOVE, PROVIDE, REUPLOAD, SUBMIT, ANALYZE, RESOLVE, PROCESS, REQUEST, PUBLISH, PASS, FAIL }
-
+	/** Valid grade values that include IN (used for Submit) **/
 	private String[] submitGrades = {Submission.GRADE_A_RETURN, Submission.GRADE_B_RETURN, Submission.GRADE_C_RETURN, Submission.GRADE_F_RETURN, Submission.GRADE_IN_RETURN, 
 			Submission.GRADE_F_AIV_RETURN};
-	
+	/** Valid grade values **/
 	private String[] grades = {Submission.GRADE_A_RETURN, Submission.GRADE_B_RETURN, Submission.GRADE_C_RETURN, Submission.GRADE_F_RETURN, Submission.GRADE_F_AIV_RETURN};
 	/**
 	 * Constructs a Command with a specified type and associated information

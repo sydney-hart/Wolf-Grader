@@ -40,6 +40,11 @@ class AssignmentReaderTest {
 	private final String[] validSubmissions = {submission1, submission2, submission3, submission4,
 				submission5, submission6, submission7};
 	
+	/**
+	 * Tests readAssignmentFile()
+	 * 
+	 * Subsequently tests processAssignment, processAssignmentLine, processSubmission
+	 */
 	@Test
 	public void testAssignmentReader() {
 		ArrayList<Assignment> assignments = AssignmentReader.readAssignmentFile(validTestFile);

@@ -152,7 +152,7 @@ public class SubmissionTest {
         Submission s = new Submission(SUBMISSION_ID, STATE, NAME, UNITY_ID, FEEDBACK_PROCESSED,
 				CHECK_RESULT, PUBLISHED, GRADER, GRADE);
 
-        String expected = "* 5,Upload,Sydney Hart,sehart,false,NONE,false,sesmith,A";
+        String expected = "* 5,Upload,Sydney Hart,sehart,false,Not Done,false,sesmith,A";
 
         assertEquals(expected, s.toString());
     }
