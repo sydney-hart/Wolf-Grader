@@ -1,0 +1,10 @@
+# Assignment A,Assignment Category 1,20
+* 2,Submitted,Carol Smith,csmith,true,Not Done,false,,
+* 4,Feedback,Sara Mendez,smendez1,false,Not Done,false,skumar,
+* 14,Upload,Oliver Grant,ogrant,false,Not Done,false,,
+# Assignment B,Assignment Category 2,100
+* 4,Grade,Daniel Wright,dwright,true,Passed,false,shassan,F
+* 7,Check,Kate Miller,kmiller,true,Not Done,false,lpatel,B
+# Assignment D,Assignment Category 4,15
+* 5,Return,Jonah Stein,jstein3,true,Failed,false,pnair,F-AIV
+* 7,Regrade,Kate Miller,kmiller,true,Passed,false,pnair,B

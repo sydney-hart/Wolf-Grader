@@ -27,7 +27,8 @@ public class WolfGrader {
 	 * Constructs a WolfGrader object
 	 */
 	public WolfGrader() {
-		
+		assignments = new ArrayList<>();
+		activeAssignment = null;
 	}
 	
 	/**
@@ -74,7 +75,8 @@ public class WolfGrader {
 	public void addNewAssignment(String assignmentName, String assignmentCategory, int maxPoints) {
 		Assignment assignment = new Assignment(assignmentName, assignmentCategory, maxPoints);
 		for (Assignment a: assignments) {
-			if (a.equals(assignment)) {
+			if (a.getAssignmentName().equals(assignmentName) && a.getAssignmentCategory().equals(assignmentCategory)
+					&& a.getMaxPoints() == maxPoints)   {
 				throw new IllegalArgumentException("Assignment not available");
 			}
 		}
@@ -93,7 +95,7 @@ public class WolfGrader {
 	        if (a.getAssignmentName().equals(assignmentName)) {
 	            activeAssignment = a;
 	            activeAssignment.setSubmissionId();
-	            found = true; // <--- ADD THIS LINE
+	            found = true;
 	        }
 	    }
 	    if (!found) {
