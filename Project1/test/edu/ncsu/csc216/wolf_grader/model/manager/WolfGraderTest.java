@@ -3,9 +3,7 @@ package edu.ncsu.csc216.wolf_grader.model.manager;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import java.util.ArrayList;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -14,6 +12,11 @@ import edu.ncsu.csc216.wolf_grader.model.command.Command;
 import edu.ncsu.csc216.wolf_grader.model.command.Command.CommandValue;
 import edu.ncsu.csc216.wolf_grader.model.submission.Submission;
 
+/**
+ * Tests WolfGrader object, with emphasis on the singleton pattern
+ * 
+ * @author Sydney Hart
+ */
 class WolfGraderTest {
 
 	/** Creates the instance of WolfGrader that will be used for testing **/
@@ -42,6 +45,9 @@ class WolfGraderTest {
         }
     }
     
+    /**
+     * Test loadAssignmentsFromFile()
+     */
     @Test
     public void testLoadAssignmentsFromFile() {
     	manager.loadAssignmentsFromFile(validTestFile);
@@ -49,12 +55,10 @@ class WolfGraderTest {
     	Assignment assignment1 = manager.getActiveAssignment();
     	assertEquals(3, assignment1.getSubmissions().size(), "Test first assignment has all submissions");
     }
-    
-    @Test
-    public void testSaveAssignments() {
-    	
-    }
 
+    /**
+     * Test addNewAssignment()
+     */
     @Test
     public void testAddNewAssignment() {
     	Assignment expected = new Assignment("Practice Problems", "Homework", 50);
@@ -68,6 +72,9 @@ class WolfGraderTest {
     	assertEquals("Assignment not available", e.getMessage());
     }
     
+    /**
+     * Test loadAssignments()
+     */
     @Test
     public void testLoadAssignments() {
     	manager.loadAssignmentsFromFile(validTestFile);
@@ -80,6 +87,9 @@ class WolfGraderTest {
     	assertEquals("Assignment not available.", e.getMessage());
     }
     
+    /**
+     * Test getAssignmentList()
+     */
     @Test
     public void testGetAssignmentList() {
     	String assignment1 = "Assignment A";
@@ -93,6 +103,9 @@ class WolfGraderTest {
     	}
     }
     
+    /**
+     * Test addSubmissionToAssignment()
+     */
     @Test
     public void testAddSubmissionToAssignment() {
     	manager.addNewAssignment("Practice Problems", "Homework", 50);
@@ -101,6 +114,9 @@ class WolfGraderTest {
     	assertEquals(1, manager.getActiveAssignment().getSubmissions().size());
     }
     
+    /**
+     * Test executeCommand()
+     */
     @Test
     public void testExecuteCommand() {
     	manager.loadAssignmentsFromFile(validTestFile);
@@ -109,6 +125,8 @@ class WolfGraderTest {
     	Submission s = manager.getActiveAssignment().getSubmissionById(14);
     	assertEquals("Feedback", s.getState());
     }
+    
+    
 //
 //    @Test
 //    void testCommandAndDeletion() {
