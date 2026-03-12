@@ -506,6 +506,7 @@ public class Submission {
 			switch(command.getCommand()) {
 				case CommandValue.PROVIDE:
 					setFeedbackProcessed(true);
+					setGrader("");
 					currentState = uploadState;
 					break;
 				default:
