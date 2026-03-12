@@ -16,11 +16,14 @@ public class Command {
 	private String commandInformation;
 	/** Enumeration of all possible command types that can a trigger state transitions in Submission **/
 	public enum CommandValue { ASSIGN, MOVE, PROVIDE, REUPLOAD, SUBMIT, ANALYZE, RESOLVE, PROCESS, REQUEST, PUBLISH, PASS, FAIL }
-	/** Valid grade values that include IN (used for Submit) **/
+	/** Valid grade values that include IN and F-AIV (used for Submit) **/
 	private String[] submitGrades = {Submission.GRADE_A_RETURN, Submission.GRADE_B_RETURN, Submission.GRADE_C_RETURN, Submission.GRADE_F_RETURN, Submission.GRADE_IN_RETURN, 
 			Submission.GRADE_F_AIV_RETURN};
-	/** Valid grade values **/
-	private String[] grades = {Submission.GRADE_A_RETURN, Submission.GRADE_B_RETURN, Submission.GRADE_C_RETURN, Submission.GRADE_F_RETURN, Submission.GRADE_F_AIV_RETURN};
+	/** Valid grade values that include F-AIV **/
+	private String[] resolveGrades = {Submission.GRADE_A_RETURN, Submission.GRADE_B_RETURN, Submission.GRADE_C_RETURN, Submission.GRADE_F_RETURN, Submission.GRADE_F_AIV_RETURN};
+	/** Valid grade values that only include letter grades **/
+	private String[] grades = {Submission.GRADE_A_RETURN, Submission.GRADE_B_RETURN, Submission.GRADE_C_RETURN, Submission.GRADE_F_RETURN};
+			
 	/**
 	 * Constructs a Command with a specified type and associated information
 	 * 
@@ -34,7 +37,7 @@ public class Command {
 		}
 		switch (commandValue) {
 			case ASSIGN:
-				if (commandInformation == null) {
+				if (commandInformation == null || commandInformation.isEmpty()) {
 					throw new IllegalArgumentException("Invalid information.");
 				}
 				break;
@@ -43,8 +46,8 @@ public class Command {
 					throw new IllegalArgumentException("Invalid information.");
 				}
 				boolean found = false;
-				for (int i = 0; i < grades.length; i++) {
-					String grade = grades[i];
+				for (int i = 0; i < resolveGrades.length; i++) {
+					String grade = resolveGrades[i];
 					if (grade.equals(commandInformation)) {
 						found = true;
 						break;
