@@ -89,7 +89,7 @@ public class Submission {
 	 * @param unityId student unity ID
 	 */
 	public Submission(String name, String unityId) {
-		this(++counter, "UPLOAD", name, unityId, false, PC_NONE, false, null, null);
+		this(counter + 1, "UPLOAD", name, unityId, false, PC_NONE, false, null, null);
 	}
 
 	/**
@@ -130,7 +130,7 @@ public class Submission {
 	 */
 	public void setId(int id) {
 		this.submissionId = id;
-		if (id >= counter) {
+		if (id > counter) {
 			setCounter(id);
 		}
 	}
