@@ -64,7 +64,29 @@ class AssignmentReaderTest {
 	@Test
 	public void testInvalidFile() {
 		Exception e = assertThrows(IllegalArgumentException.class, () -> AssignmentReader.readAssignmentFile("does_not_exist.txt"));
-		assertEquals("Unable to load file.", e.getMessage());
+		assertEquals("Unable to load file .", e.getMessage());
+	}
+	
+	/**
+	 * Tests correct exception is thrown when file is empty
+	 */
+	@Test
+	public void testEmptyFile() {
+		ArrayList<Assignment> assignments = new ArrayList<>();
+		assertEquals(assignments, AssignmentReader.readAssignmentFile("test-files/empty.txt"));
+	}
+	
+	/**
+	 * Tests exception for invalid assignments and submissions
+	 */
+	@Test
+	public void testExceptions() {
+		Exception e = assertThrows(IllegalArgumentException.class, () -> 
+				AssignmentReader.readAssignmentFile("test-files/assignment3.txt"));
+		assertEquals("Unable to load file .", e.getMessage());
+		Exception f = assertThrows(IllegalArgumentException.class, () -> 
+			AssignmentReader.readAssignmentFile("test-files/assignment8.txt"));
+		assertEquals("Unable to load file .", f.getMessage());
 	}
 
 }
