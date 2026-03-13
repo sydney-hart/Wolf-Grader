@@ -132,9 +132,14 @@ public class Submission {
 	 * @param submissionId the submissionId to set
 	 */
 	public void setId(int id) {
-		this.submissionId = id;
-		if (id > counter) {
-			setCounter(id);
+		if (id == counter) {
+			this.submissionId = id + 1;
+			incrementCounter();
+		} else {
+			this.submissionId = id;
+			if (id > counter) {
+				setCounter(id);
+			}
 		}
 	}
 	
