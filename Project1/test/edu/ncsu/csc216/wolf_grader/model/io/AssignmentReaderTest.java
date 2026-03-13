@@ -64,7 +64,7 @@ class AssignmentReaderTest {
 	@Test
 	public void testInvalidFile() {
 		Exception e = assertThrows(IllegalArgumentException.class, () -> AssignmentReader.readAssignmentFile("does_not_exist.txt"));
-		assertEquals("Unable to load file", e.getMessage());
+		assertEquals("Unable to load file.", e.getMessage());
 	}
 
 }

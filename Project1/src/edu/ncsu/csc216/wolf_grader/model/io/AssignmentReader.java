@@ -32,7 +32,7 @@ public class AssignmentReader {
 	            fileContents += fileReader.nextLine() + "\n";
 	        }
 	    } catch (FileNotFoundException e) {
-	        throw new IllegalArgumentException("Unable to load file");
+	        throw new IllegalArgumentException("Unable to load file.");
 	    }
 	    if (fileContents.isEmpty() || !fileContents.trim().startsWith("#")) {
 	        return assignments;
@@ -44,7 +44,7 @@ public class AssignmentReader {
 	                Assignment assignment = processAssignment(s);
 	                assignments.add(assignment);
 	            } catch (Exception e) {
-	            	throw new IllegalArgumentException("Unable to load file");
+	            	throw new IllegalArgumentException("Unable to load file.");
 	            }
 	        }
 	    }

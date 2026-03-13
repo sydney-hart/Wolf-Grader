@@ -3,10 +3,13 @@ package edu.ncsu.csc216.wolf_grader.model.manager;
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Scanner;
 
 import edu.ncsu.csc216.wolf_grader.model.command.Command;
 import edu.ncsu.csc216.wolf_grader.model.command.Command.CommandValue;
@@ -126,78 +129,69 @@ class WolfGraderTest {
     	assertEquals("Feedback", s.getState());
     }
     
+    /**
+     * Test deleteSubmissionById()
+     */
+    @Test
+    public void testDeleteSubmissionById() {
+    	manager.loadAssignmentsFromFile(validTestFile);
+    	manager.deleteSubmissionById(14);
+    	assertEquals(2, manager.getActiveAssignment().getSubmissions().size());
+    	assertEquals("Carol Smith", manager.getActiveAssignment().getSubmissionById(2).getName());
+    	assertEquals("Sara Mendez", manager.getActiveAssignment().getSubmissionById(4).getName());
+    	assertNull(manager.getActiveAssignment().getSubmissionById(14));
+    }
     
-//
-//    @Test
-//    void testCommandAndDeletion() {
-//        manager.addNewAssignment("Project 2", "CSC216", 100);
-//        manager.addSubmissionToAssignment("Bob", "bobby");
-//        
-//        // Covers executeCommand
-//        Command c = new Command(Command.CommandValue.ASSIGN, "grader_smith");
-//        manager.executeCommand(0, c); 
-//        
-//        // Covers deleteSubmissionById
-//        manager.deleteSubmissionById(0);
-//        assertEquals(0, manager.getSubmissionsAsArray("All").length);
-//    }
-//
-//    @Test
-//    void testErrorBranches() {
-//        // Covers saveAssignmentsToFile exception
-//        assertThrows(IllegalArgumentException.class, () -> manager.saveAssignmentsToFile("invalid.txt"));
-//    }
-//
-//    @Test
-//    void testFilteringSubmissionsByState() {
-//        WolfGrader manager = WolfGrader.getInstance();
-//        manager.resetManager();
-//        manager = WolfGrader.getInstance();
-//        
-//        manager.addNewAssignment("FilteredTask", "Lab", 50);
-//        manager.addSubmissionToAssignment("Student A", "sa");
-//        manager.addSubmissionToAssignment("Student B", "sb");
-//        
-//        // Move Student A to 'Feedback' state via command
-//        // This ensures the filter loop has different states to look at
-//        int firstId = Integer.parseInt(manager.getSubmissionsAsArray("All")[0][0]);
-//        manager.executeCommand(firstId, new Command(Command.CommandValue.ASSIGN, "grader1"));
-//
-//        // Coverage for the 'if' branches in getSubmissionsAsArray
-//        String[][] all = manager.getSubmissionsAsArray("All");
-//        String[][] feedbackOnly = manager.getSubmissionsAsArray("Feedback");
-//        String[][] uploadOnly = manager.getSubmissionsAsArray("Upload");
-//
-//        assertTrue(all.length == 2);
-//        assertEquals(1, feedbackOnly.length);
-//        assertEquals(1, uploadOnly.length);
-//    }
-//
-//    @Test
-//    void testGetSubmissionByIdNotFound() {
-//        WolfGrader manager = WolfGrader.getInstance();
-//        manager.resetManager();
-//        manager = WolfGrader.getInstance();
-//        
-//        manager.addNewAssignment("FindMe", "Exam", 100);
-//        manager.addSubmissionToAssignment("User", "u1");
-//
-//        // Hit the 'return null' after the loop finishes without finding the ID
-//        assertNull(manager.getSubmissionById(-999));
-//        
-//        // Hit the branch where activeAssignment is null
-//        manager.resetManager();
-//        manager = WolfGrader.getInstance();
-//        assertNull(manager.getSubmissionById(1));
-//    }
-//    
-//    @Test
-//    void testGetActiveAssignmentNameNullBranch() {
-//        WolfGrader manager = WolfGrader.getInstance();
-//        manager.resetManager();
-//        manager = WolfGrader.getInstance();
-//        
-//        // Hits the 'return null' when activeAssignment is null
-//        assertNull(manager.getActiveAssignmentName());
-//    }
+    /**
+     * Test getSubmissionAsArray()
+     * Also test filtering ability
+     */
+    @Test
+    public void testFilteringSubmissionsByState() {
+    	
+	  manager.addNewAssignment("Lab Report", "Lab", 50);
+	  manager.addSubmissionToAssignment("Sydney Hart", "sehart");
+	  manager.addSubmissionToAssignment("Katie Hart", "kbhart");
+	  
+	  manager.executeCommand(1, new Command(CommandValue.ASSIGN, "sesmith"));
+
+	  String[][] all = manager.getSubmissionsAsArray("All");
+	  String[][] feedbackOnly = manager.getSubmissionsAsArray("Feedback");
+	  String[][] uploadOnly = manager.getSubmissionsAsArray("Upload");
+	
+	  assertTrue(all.length == 2);
+	  assertEquals(1, feedbackOnly.length);
+	  assertEquals(1, uploadOnly.length);
+    }
+    
+    /**
+     * Test saveAssignments()
+     */
+    @Test
+    public void testSaveAssignments() {
+    	manager.addNewAssignment("Lab Report", "Lab", 50);
+    	manager.addSubmissionToAssignment("Sydney Hart", "sehart");
+    	manager.saveAssignmentsToFile("test-files/actual_save_assignments.txt");
+    	checkFiles("test-files/expected_save_assignments.txt", "test-files/actual_save_assignments.txt");
+    }
+    
+    /**
+	 * Helper method to compare two files for the same contents
+	 * @param expFile expected output
+	 * @param actFile actual output
+	 */
+	private void checkFiles(String expFile, String actFile) {
+		try (Scanner expScanner = new Scanner(new File(expFile));
+			 Scanner actScanner = new Scanner(new File(actFile));) {
+			
+			while (expScanner.hasNextLine()) {
+				assertEquals(expScanner.nextLine(), actScanner.nextLine());
+			}
+			
+			expScanner.close();
+			actScanner.close();
+		} catch (IOException e) {
+			fail("Error reading files.");
+		}
+	}
 }
