@@ -744,11 +744,11 @@ public class Submission {
 			switch (command.getCommand()) {
 				case RESOLVE:
 					if (!grade.equals("IN")) {
-						throw new IllegalArgumentException("Invalid information.");
+						throw new UnsupportedOperationException("Invalid information.");
 					}
 					assignmentGrade = command.getCommandInformation();
 					if (assignmentGrade.equals(GRADE_IN_RETURN)) {
-						throw new IllegalArgumentException("Invalid informtaion.");
+						throw new UnsupportedOperationException("Invalid informtaion.");
 					}
 					if (assignmentGrade.equals(GRADE_F_AIV_RETURN)) {
 						setCheckResult(PC_FAIL);
@@ -760,13 +760,13 @@ public class Submission {
 					break;
 				case REQUEST:
 					if (grade.equals(GRADE_IN_RETURN) || grade.equals(GRADE_F_AIV_RETURN)) {
-						throw new IllegalArgumentException("Invalid informtaion.");
+						throw new UnsupportedOperationException("Invalid informtaion.");
 					}
 					currentState = regradeState;
 					break;
 				case PUBLISH:
 					if (published || grade.equals(GRADE_IN_RETURN)) {
-						throw new IllegalArgumentException("Invalid information.");
+						throw new UnsupportedOperationException("Invalid information.");
 					}
 					setPublished(true);
 					currentState = returnState;
