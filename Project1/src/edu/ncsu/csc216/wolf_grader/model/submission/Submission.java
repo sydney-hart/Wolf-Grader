@@ -126,7 +126,7 @@ public class Submission {
 	 */
 	public void setId(int id) {
 		if (id == 0) {
-			this.submissionId = 1;
+			throw new IllegalArgumentException("Invalid Id");
 		} else {
 			this.submissionId = id;
 			if (id >= counter) {

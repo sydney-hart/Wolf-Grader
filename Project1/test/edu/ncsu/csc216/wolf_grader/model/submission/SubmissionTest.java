@@ -44,7 +44,7 @@ public class SubmissionTest {
 	@BeforeEach
 	public void setUp() throws Exception {
 		//Reset the counter at the beginning of every test.
-		Submission.setCounter(0);
+		Submission.setCounter(1);
 	}
 
     /**
