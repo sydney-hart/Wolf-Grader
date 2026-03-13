@@ -260,7 +260,7 @@ public class Submission {
 	 */
 	public void setGrade(String grade) {
 		if (grade == null) {
-			if (grader != null || !grader.equals("")) {
+			if (grader != null && !grader.equals("")) {
 				throw new IllegalArgumentException("Submission cannot be created.");
 			} else {
 				this.grade = "";
