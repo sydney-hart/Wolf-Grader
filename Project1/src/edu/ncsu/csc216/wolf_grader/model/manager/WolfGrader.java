@@ -29,7 +29,7 @@ public class WolfGrader {
 	public WolfGrader() {
 		assignments = new ArrayList<>();
 		activeAssignment = null;
-	}
+		Submission.setCounter(0);	}
 	
 	/**
 	 * Returns a single instance of the WolfGrader

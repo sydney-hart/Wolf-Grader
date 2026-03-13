@@ -132,10 +132,15 @@ public class Submission {
 	 * @param submissionId the submissionId to set
 	 */
 	public void setId(int id) {
-		this.submissionId = id;
-		if (id > counter) {
-			setCounter(id);
+		if (id == 0) {
+			this.submissionId = 1;
+		} else {
+			this.submissionId = id;
+			if (id >= counter) {
+				setCounter(id);
+			}
 		}
+		incrementCounter();
 	}
 	
 	/**
@@ -352,6 +357,9 @@ public class Submission {
 	 */
 	public String getGrade() {
 		if (grade == null) {
+			if (grader != null || !grader.equals("")) {
+				throw new IllegalArgumentException("Submission cannot be created.");
+			}
 			return "";
 		}
 		return grade;
@@ -607,7 +615,7 @@ public class Submission {
 					break;
 				case CommandValue.SUBMIT:
 					assignmentGrade = command.getCommandInformation();
-					if (assignmentGrade.equals(GRADE_F_AIV_RETURN)) {
+					if (assignmentGrade.equals(GRADE_F_AIV_RETURN) || assignmentGrade.equals(GRADE_IN_RETURN)) {
 						 setCheckResult(PC_FAIL);
 					} else {
 						setCheckResult(PC_PASS);
@@ -621,7 +629,7 @@ public class Submission {
 							currentState = returnState;
 							break;
 						case PASS:
-							if (assignmentGrade.equals(GRADE_F_AIV_RETURN)) {
+							if (assignmentGrade.equals(GRADE_F_AIV_RETURN) ||assignmentGrade.equals(GRADE_IN_RETURN)) {
 								throw new UnsupportedOperationException("Invalid informtaion.");
 							}
 							grade = assignmentGrade;
