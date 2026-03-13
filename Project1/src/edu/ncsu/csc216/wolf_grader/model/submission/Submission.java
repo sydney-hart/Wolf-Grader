@@ -120,6 +120,7 @@ public class Submission {
 		setGrader(grader);
 		setGrade(grade);
 		setId(submissionId);
+		incrementCounter();
 	}
 
 	/**
@@ -132,7 +133,6 @@ public class Submission {
 		if (id >= counter) {
 			setCounter(id);
 		}
-		incrementCounter();
 	}
 	
 	/**
@@ -143,6 +143,9 @@ public class Submission {
 	 * the valid options
 	 */
 	public void setState(String stateValue) {
+		if (stateValue == null ) {
+			throw new IllegalArgumentException("Submission cannot be created.");
+		}
 		stateValue = stateValue.toUpperCase();
 		switch (stateValue) {
 			case "UPLOAD": 
