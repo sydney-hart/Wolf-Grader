@@ -44,7 +44,7 @@ public class AssignmentReader {
 	                Assignment assignment = processAssignment(s);
 	                assignments.add(assignment);
 	            } catch (Exception e) {
-	            	throw new IllegalArgumentException("Unable to load file .");
+	            	//ignore invalid assignment
 	            }
 	        }
 	    }
