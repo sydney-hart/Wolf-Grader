@@ -89,7 +89,7 @@ public class Submission {
 	 * @param unityId student unity ID
 	 */
 	public Submission(String name, String unityId) {
-		this(counter, "UPLOAD", name, unityId, false, PC_NONE, false, null, null);
+		this(counter++, "UPLOAD", name, unityId, false, PC_NONE, false, null, null);
 	}
 
 	/**
@@ -602,13 +602,17 @@ public class Submission {
 					break;
 				case CommandValue.SUBMIT:
 					assignmentGrade = command.getCommandInformation();
+					if (assignmentGrade.equals(GRADE_F_AIV_RETURN)) {
+						 setCheckResult(PC_FAIL);
+					} else {
+						setCheckResult(PC_PASS);
+					}
 					if (checkResult.equals(PlagiarismCheckResult.NONE)) {
 						throw new UnsupportedOperationException("Invalid information.");
 					}
 					switch (checkResult) {
 						case FAIL:
 							grade = assignmentGrade;
-							setCheckResult(PC_FAIL);
 							currentState = returnState;
 							break;
 						case PASS:
@@ -616,7 +620,6 @@ public class Submission {
 								throw new UnsupportedOperationException("Invalid informtaion.");
 							}
 							grade = assignmentGrade;
-							setCheckResult(PC_PASS);
 							currentState = returnState;
 							break;
 						default:
