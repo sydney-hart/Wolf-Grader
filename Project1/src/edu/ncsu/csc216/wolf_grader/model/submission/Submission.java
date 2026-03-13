@@ -108,9 +108,6 @@ public class Submission {
 	 */
 	public Submission(int submissionId, String state, String name, String unityId,
 			boolean feedbackProcessed, String checkResult, boolean published, String grader, String grade) {
-		if (submissionId <= 0) {
-			throw new IllegalArgumentException("Submission cannot be created.");
-		}
 		setState(state);
 		setFeedbackProcessed(feedbackProcessed);
 		setName(name);
@@ -753,8 +750,12 @@ public class Submission {
 					if (assignmentGrade.equals(GRADE_IN_RETURN)) {
 						throw new IllegalArgumentException("Invalid informtaion.");
 					}
+					if (assignmentGrade.equals(GRADE_F_AIV_RETURN)) {
+						setCheckResult(PC_FAIL);
+					} else {
+						setCheckResult(PC_PASS);
+					}
 					grade = assignmentGrade;
-					setCheckResult(PC_PASS);
 					currentState = returnState;
 					break;
 				case REQUEST:
