@@ -44,7 +44,7 @@ public class AssignmentReader {
 	                Assignment assignment = processAssignment(s);
 	                assignments.add(assignment);
 	            } catch (Exception e) {
-	            	//ignore invalid assignment
+	            	throw new IllegalArgumentException("Unable to load file .");
 	            }
 	        }
 	    }
@@ -131,6 +131,10 @@ public class AssignmentReader {
 	        String grade = "";
 	        if (lineScanner.hasNext()) {
 	        	grade = lineScanner.next().trim();
+	        }
+	        if (lineScanner.hasNext()) {
+	        	lineScanner.close();
+	        	throw new IllegalArgumentException("Invalid submission line");
 	        }
 	        lineScanner.close();
 	        return new Submission(id, state, name, unityId, feedback, result, published, grader, grade);
