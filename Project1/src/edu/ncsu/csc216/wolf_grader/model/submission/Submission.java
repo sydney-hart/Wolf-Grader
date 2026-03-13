@@ -89,7 +89,7 @@ public class Submission {
 	 * @param unityId student unity ID
 	 */
 	public Submission(String name, String unityId) {
-		this(counter++, "UPLOAD", name, unityId, false, PC_NONE, false, null, null);
+		this(++counter, "UPLOAD", name, unityId, false, PC_NONE, false, null, null);
 	}
 
 	/**
@@ -128,13 +128,9 @@ public class Submission {
 	 * @param submissionId the submissionId to set
 	 */
 	public void setId(int id) {
-		if (id == 0) {
-			this.submissionId = 1;
-		} else {
-			this.submissionId = id;
-			if (id >= counter) {
-				setCounter(id);
-			}
+		this.submissionId = id;
+		if (id >= counter) {
+			setCounter(id);
 		}
 		incrementCounter();
 	}
@@ -619,7 +615,7 @@ public class Submission {
 							currentState = returnState;
 							break;
 						case PASS:
-							if (assignmentGrade.equals(GRADE_F_AIV_RETURN) || assignmentGrade.equals(GRADE_IN_RETURN)) {
+							if (assignmentGrade.equals(GRADE_F_AIV_RETURN)) {
 								throw new UnsupportedOperationException("Invalid informtaion.");
 							}
 							grade = assignmentGrade;
