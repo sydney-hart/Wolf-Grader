@@ -89,7 +89,7 @@ public class Submission {
 	 * @param unityId student unity ID
 	 */
 	public Submission(String name, String unityId) {
-		this(counter + 1, "UPLOAD", name, unityId, false, PC_NONE, false, null, null);
+		this(counter, "UPLOAD", name, unityId, false, PC_NONE, false, null, null);
 	}
 
 	/**
@@ -109,7 +109,11 @@ public class Submission {
 	public Submission(int submissionId, String state, String name, String unityId,
 			boolean feedbackProcessed, String checkResult, boolean published, String grader, String grade) {
 		if (submissionId <= 0) {
-			throw new IllegalArgumentException("Submission cannot be created.");
+			if (counter == 0) {
+				submissionId = 1;
+			} else {
+				throw new IllegalArgumentException("Submission cannot be created.");
+			}
 		}
 		setState(state);
 		setFeedbackProcessed(feedbackProcessed);
@@ -120,7 +124,6 @@ public class Submission {
 		setGrader(grader);
 		setGrade(grade);
 		setId(submissionId);
-		incrementCounter();
 	}
 
 	/**
