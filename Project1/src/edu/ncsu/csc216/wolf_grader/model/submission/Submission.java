@@ -452,20 +452,20 @@ public class Submission {
 				case CommandValue.ASSIGN:
 					String graderId = command.getCommandInformation();
 					if (graderId == null || graderId.isEmpty() || feedbackProcessed) {
-						throw new IllegalArgumentException("Invalid information.");
+						throw new UnsupportedOperationException("Invalid information.");
 					}
 					grader = graderId;
 					currentState = feedbackState;
 					break;
 				case CommandValue.REUPLOAD:
 					if (!feedbackProcessed) {
-						throw new IllegalArgumentException("Invalid information.");
+						throw new UnsupportedOperationException("Invalid information.");
 					}
 					currentState = uploadState;
 					break;
 				case CommandValue.MOVE:
 					if (!feedbackProcessed) {
-						throw new IllegalArgumentException("Invalid information.");
+						throw new UnsupportedOperationException("Invalid information.");
 					}
 					currentState = submittedState;
 					break;
@@ -548,7 +548,7 @@ public class Submission {
 				case CommandValue.ASSIGN:
 					String graderId = command.getCommandInformation();
 					if (graderId == null || graderId.isEmpty()) {
-						throw new IllegalArgumentException("Invalid information.");
+						throw new UnsupportedOperationException("Invalid information.");
 					}
 					grader = graderId;
 					currentState = gradeState;
@@ -592,10 +592,10 @@ public class Submission {
 				case CommandValue.ANALYZE:
 					assignmentGrade = command.getCommandInformation();
 					if (!checkResult.equals(PlagiarismCheckResult.NONE)) {
-						throw new IllegalArgumentException("Invalid information.");
+						throw new UnsupportedOperationException("Invalid information.");
 					}
 					if (assignmentGrade.equals(GRADE_F_AIV_RETURN) || assignmentGrade.equals(GRADE_IN_RETURN)) {
-						throw new IllegalArgumentException("Invalid informtaion.");
+						throw new UnsupportedOperationException("Invalid informtaion.");
 					}
 					grade = assignmentGrade;
 					currentState = checkState;
@@ -603,22 +603,24 @@ public class Submission {
 				case CommandValue.SUBMIT:
 					assignmentGrade = command.getCommandInformation();
 					if (checkResult.equals(PlagiarismCheckResult.NONE)) {
-						throw new IllegalArgumentException("Invalid information.");
+						throw new UnsupportedOperationException("Invalid information.");
 					}
 					switch (checkResult) {
 						case FAIL:
 							grade = assignmentGrade;
+							setCheckResult(PC_FAIL);
 							currentState = returnState;
 							break;
 						case PASS:
 							if (assignmentGrade.equals(GRADE_F_AIV_RETURN) || assignmentGrade.equals(GRADE_IN_RETURN)) {
-								throw new IllegalArgumentException("Invalid informtaion.");
+								throw new UnsupportedOperationException("Invalid informtaion.");
 							}
 							grade = assignmentGrade;
+							setCheckResult(PC_PASS);
 							currentState = returnState;
 							break;
 						default:
-							throw new IllegalArgumentException("Invalid information.");
+							throw new UnsupportedOperationException("Invalid information.");
 					}
 					break;
 				default:
