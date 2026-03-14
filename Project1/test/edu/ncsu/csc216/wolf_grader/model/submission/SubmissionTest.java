@@ -170,6 +170,138 @@ public class SubmissionTest {
         assertEquals("Invalid command.", e.getMessage());
     }
     
+    @Test
+    public void testInvalidNullState() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, null, "Sydney Hart", "sehart", false, "Not Done", false, "", ""));
+    }
+
+    @Test
+    public void testInvalidBadState() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "BadState", "Sydney Hart", "sehart", false, "Not Done", false, "", ""));
+    }
+
+    @Test
+    public void testInvalidFeedbackProcessedInFeedback() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Feedback", "Sydney Hart", "sehart", true, "Not Done", false, "grader1", ""));
+    }
+
+    @Test
+    public void testInvalidFeedbackProcessedFalseInSubmitted() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Submitted", "Sydney Hart", "sehart", false, "Not Done", false, "", ""));
+    }
+
+    @Test
+    public void testInvalidGraderInSubmitted() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Submitted", "Sydney Hart", "sehart", true, "Not Done", false, "grader1", ""));
+    }
+
+    @Test
+    public void testInvalidNoGraderInFeedback() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Feedback", "Sydney Hart", "sehart", false, "Not Done", false, "", ""));
+    }
+
+    @Test
+    public void testInvalidPassedCheckInUpload() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Upload", "Sydney Hart", "sehart", false, "Passed", false, "", ""));
+    }
+
+    @Test
+    public void testInvalidPassedCheckInFeedback() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Feedback", "Sydney Hart", "sehart", false, "Passed", false, "grader1", ""));
+    }
+
+    @Test
+    public void testInvalidPassedCheckInSubmitted() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Submitted", "Sydney Hart", "sehart", true, "Passed", false, "", ""));
+    }
+
+    @Test
+    public void testInvalidPassedCheckInCheck() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Check", "Sydney Hart", "sehart", true, "Passed", false, "grader1", "A"));
+    }
+
+    @Test
+    public void testInvalidRegradeWithFailed() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Regrade", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "A"));
+    }
+
+    @Test
+    public void testInvalidRegradeWithFAIV() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Regrade", "Sydney Hart", "sehart", true, "Passed", false, "grader1", "F-AIV"));
+    }
+
+    @Test
+    public void testInvalidReturnNoDone() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Return", "Sydney Hart", "sehart", true, "Not Done", false, "grader1", "A"));
+    }
+
+    @Test
+    public void testInvalidReturnPassedWithFAIV() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Return", "Sydney Hart", "sehart", true, "Passed", false, "grader1", "F-AIV"));
+    }
+
+    @Test
+    public void testInvalidReturnPassedWithIN() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Return", "Sydney Hart", "sehart", true, "Passed", false, "grader1", "IN"));
+    }
+
+    @Test
+    public void testInvalidReturnFailedWithLetterGrade() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Return", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "A"));
+    }
+
+    @Test
+    public void testInvalidPublishedNotReturn() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Upload", "Sydney Hart", "sehart", false, "Not Done", true, "", ""));
+    }
+
+    @Test
+    public void testInvalidPublishedWithIN() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Return", "Sydney Hart", "sehart", true, "Failed", true, "grader1", "IN"));
+    }
+
+    @Test
+    public void testInvalidGradeInUpload() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Upload", "Sydney Hart", "sehart", false, "Not Done", false, "", "A"));
+    }
+
+    @Test
+    public void testInvalidNoGradeInCheck() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Check", "Sydney Hart", "sehart", true, "Not Done", false, "grader1", ""));
+    }
+
+    @Test
+    public void testInvalidFAIVInCheck() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Check", "Sydney Hart", "sehart", true, "Not Done", false, "grader1", "F-AIV"));
+    }
+
+    @Test
+    public void testInvalidGradeStateNotDoneWithGrade() {
+        assertThrows(IllegalArgumentException.class, () ->
+            new Submission(1, "Grade", "Sydney Hart", "sehart", true, "Not Done", false, "grader1", "A"));
+    }
+    
     /**
      * Tests that Submission can correctly change states
      */
@@ -234,6 +366,317 @@ public class SubmissionTest {
     	s.update(publish);
     	assertEquals("Return", s.getState(), "incorrect state: Return4");
     	assertTrue(s.isPublished());
+    }
+    
+    @Test
+    public void testUploadAssignTransitionToFeedback() {
+        Submission s = new Submission("Sydney Hart", "sehart");
+        s.update(new Command(CommandValue.ASSIGN, "grader1"));
+        assertEquals("Feedback", s.getState());
+        assertEquals("grader1", s.getGrader());
+    }
+
+    @Test
+    public void testUploadAssignFailsWhenFeedbackProcessed() {
+        Submission s = new Submission("Sydney Hart", "sehart");
+        s.update(new Command(CommandValue.ASSIGN, "grader1"));
+        s.update(new Command(CommandValue.PROVIDE, null));
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.ASSIGN, "grader1")));
+    }
+
+    @Test
+    public void testUploadMoveToSubmitted() {
+        Submission s = new Submission("Sydney Hart", "sehart");
+        s.update(new Command(CommandValue.ASSIGN, "grader1"));
+        s.update(new Command(CommandValue.PROVIDE, null));
+        s.update(new Command(CommandValue.MOVE, null));
+        assertEquals("Submitted", s.getState());
+    }
+
+    @Test
+    public void testUploadReupload() {
+        Submission s = new Submission("Sydney Hart", "sehart");
+        s.update(new Command(CommandValue.ASSIGN, "grader1"));
+        s.update(new Command(CommandValue.PROVIDE, null));
+        s.update(new Command(CommandValue.REUPLOAD, null));
+        assertEquals("Upload", s.getState());
+    }
+
+    @Test
+    public void testUploadReuploadFailsWithoutFeedback() {
+        Submission s = new Submission("Sydney Hart", "sehart");
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.REUPLOAD, null)));
+    }
+
+    @Test
+    public void testUploadMoveFailsWithoutFeedback() {
+        Submission s = new Submission("Sydney Hart", "sehart");
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.MOVE, null)));
+    }
+
+    @Test
+    public void testUploadInvalidCommand() {
+        Submission s = new Submission("Sydney Hart", "sehart");
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.SUBMIT, "A")));
+    }
+
+    // FEEDBACK STATE TESTS
+
+    @Test
+    public void testFeedbackProvideTransition() {
+        Submission s = new Submission("Sydney Hart", "sehart");
+        s.update(new Command(CommandValue.ASSIGN, "grader1"));
+        s.update(new Command(CommandValue.PROVIDE, null));
+        assertEquals("Upload", s.getState());
+        assertTrue(s.isFeedbackProcessed());
+        assertEquals("", s.getGrader());
+    }
+
+    @Test
+    public void testFeedbackInvalidCommand() {
+        Submission s = new Submission("Sydney Hart", "sehart");
+        s.update(new Command(CommandValue.ASSIGN, "grader1"));
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.SUBMIT, "A")));
+    }
+
+    // SUBMITTED STATE TESTS
+
+    @Test
+    public void testSubmittedAssignToGrade() {
+        Submission s = new Submission("Sydney Hart", "sehart");
+        s.update(new Command(CommandValue.ASSIGN, "grader1"));
+        s.update(new Command(CommandValue.PROVIDE, null));
+        s.update(new Command(CommandValue.MOVE, null));
+        s.update(new Command(CommandValue.ASSIGN, "grader2"));
+        assertEquals("Grade", s.getState());
+        assertEquals("grader2", s.getGrader());
+    }
+
+    @Test
+    public void testSubmittedInvalidCommand() {
+        Submission s = new Submission("Sydney Hart", "sehart");
+        s.update(new Command(CommandValue.ASSIGN, "grader1"));
+        s.update(new Command(CommandValue.PROVIDE, null));
+        s.update(new Command(CommandValue.MOVE, null));
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.SUBMIT, "A")));
+    }
+
+    // ========================
+    // GRADE STATE TESTS
+    // ========================
+
+    private Submission getSubmissionInGradeState() {
+        Submission s = new Submission("Sydney Hart", "sehart");
+        s.update(new Command(CommandValue.ASSIGN, "grader1"));
+        s.update(new Command(CommandValue.PROVIDE, null));
+        s.update(new Command(CommandValue.MOVE, null));
+        s.update(new Command(CommandValue.ASSIGN, "grader2"));
+        return s;
+    }
+
+    @Test
+    public void testGradeAnalyzeToCheck() {
+        Submission s = getSubmissionInGradeState();
+        s.update(new Command(CommandValue.ANALYZE, "A"));
+        assertEquals("Check", s.getState());
+        assertEquals("A", s.getGrade());
+    }
+
+    @Test
+    public void testGradeAnalyzeFailsWhenNotNone() {
+        Submission s = new Submission(1, "Grade", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "");
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.ANALYZE, "A")));
+    }
+
+    @Test
+    public void testGradeSubmitPassedLetterGrade() {
+        Submission s = new Submission(1, "Grade", "Sydney Hart", "sehart", true, "Passed", false, "grader1", "");
+        s.update(new Command(CommandValue.SUBMIT, "B"));
+        assertEquals("Return", s.getState());
+        assertEquals("B", s.getGrade());
+    }
+
+    @Test
+    public void testGradeSubmitFailedFAIV() {
+        Submission s = new Submission(1, "Grade", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "");
+        s.update(new Command(CommandValue.SUBMIT, "F-AIV"));
+        assertEquals("Return", s.getState());
+        assertEquals("F-AIV", s.getGrade());
+    }
+
+    @Test
+    public void testGradeSubmitFailedIN() {
+        Submission s = new Submission(1, "Grade", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "");
+        s.update(new Command(CommandValue.SUBMIT, "IN"));
+        assertEquals("Return", s.getState());
+        assertEquals("IN", s.getGrade());
+    }
+
+    @Test
+    public void testGradeSubmitFailedLetterGradeResetsToPass() {
+        Submission s = new Submission(1, "Grade", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "");
+        s.update(new Command(CommandValue.SUBMIT, "A"));
+        assertEquals("Return", s.getState());
+        assertEquals("Passed", s.getCheckResult());
+    }
+
+    @Test
+    public void testGradeSubmitNoneThrows() {
+        Submission s = getSubmissionInGradeState();
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.SUBMIT, "A")));
+    }
+
+    @Test
+    public void testGradeSubmitPassedFAIVThrows() {
+        Submission s = new Submission(1, "Grade", "Sydney Hart", "sehart", true, "Passed", false, "grader1", "");
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.SUBMIT, "F-AIV")));
+    }
+
+    @Test
+    public void testGradeInvalidCommand() {
+        Submission s = getSubmissionInGradeState();
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.PUBLISH, null)));
+    }
+
+    // CHECK STATE TESTS
+
+    @Test
+    public void testCheckPassToReturn() {
+        Submission s = getSubmissionInGradeState();
+        s.update(new Command(CommandValue.ANALYZE, "A"));
+        s.update(new Command(CommandValue.PASS, null));
+        assertEquals("Return", s.getState());
+        assertEquals("Passed", s.getCheckResult());
+    }
+
+    @Test
+    public void testCheckFailToGrade() {
+        Submission s = getSubmissionInGradeState();
+        s.update(new Command(CommandValue.ANALYZE, "A"));
+        s.update(new Command(CommandValue.FAIL, null));
+        assertEquals("Grade", s.getState());
+        assertEquals("Failed", s.getCheckResult());
+    }
+
+    @Test
+    public void testCheckInvalidCommand() {
+        Submission s = getSubmissionInGradeState();
+        s.update(new Command(CommandValue.ANALYZE, "A"));
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.SUBMIT, "A")));
+    }
+
+    // REGRADE STATE TESTS
+
+    private Submission getSubmissionInReturnState() {
+        Submission s = getSubmissionInGradeState();
+        s.update(new Command(CommandValue.ANALYZE, "A"));
+        s.update(new Command(CommandValue.PASS, null));
+        return s;
+    }
+
+    @Test
+    public void testRegradeProcessToGrade() {
+        Submission s = getSubmissionInReturnState();
+        s.update(new Command(CommandValue.REQUEST, null));
+        s.update(new Command(CommandValue.PROCESS, null));
+        assertEquals("Grade", s.getState());
+    }
+
+    @Test
+    public void testRegradeInvalidCommand() {
+        Submission s = getSubmissionInReturnState();
+        s.update(new Command(CommandValue.REQUEST, null));
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.PUBLISH, null)));
+    }
+
+    // RETURN STATE TESTS
+
+    @Test
+    public void testReturnPublish() {
+        Submission s = getSubmissionInReturnState();
+        s.update(new Command(CommandValue.PUBLISH, null));
+        assertTrue(s.isPublished());
+        assertEquals("Return", s.getState());
+    }
+
+    @Test
+    public void testReturnPublishAlreadyPublishedThrows() {
+        Submission s = getSubmissionInReturnState();
+        s.update(new Command(CommandValue.PUBLISH, null));
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.PUBLISH, null)));
+    }
+
+    @Test
+    public void testReturnRequestRegrade() {
+        Submission s = getSubmissionInReturnState();
+        s.update(new Command(CommandValue.REQUEST, null));
+        assertEquals("Regrade", s.getState());
+    }
+
+    @Test
+    public void testReturnRequestRegradeFailsWithIN() {
+        Submission s = new Submission(1, "Return", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "IN");
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.REQUEST, null)));
+    }
+
+    @Test
+    public void testReturnRequestRegradeFailsWithFAIV() {
+        Submission s = new Submission(1, "Return", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "F-AIV");
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.REQUEST, null)));
+    }
+
+    @Test
+    public void testReturnResolveIN() {
+        Submission s = new Submission(1, "Return", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "IN");
+        s.update(new Command(CommandValue.RESOLVE, "B"));
+        assertEquals("Return", s.getState());
+        assertEquals("B", s.getGrade());
+        assertEquals("Passed", s.getCheckResult());
+    }
+
+    @Test
+    public void testReturnResolveINToFAIV() {
+        Submission s = new Submission(1, "Return", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "IN");
+        s.update(new Command(CommandValue.RESOLVE, "F-AIV"));
+        assertEquals("Return", s.getState());
+        assertEquals("F-AIV", s.getGrade());
+        assertEquals("Failed", s.getCheckResult());
+    }
+
+    @Test
+    public void testReturnResolveFailsWhenNotIN() {
+        Submission s = getSubmissionInReturnState();
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.RESOLVE, "B")));
+    }
+
+    @Test
+    public void testReturnPublishFailsWithIN() {
+        Submission s = new Submission(1, "Return", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "IN");
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.PUBLISH, null)));
+    }
+
+    @Test
+    public void testReturnInvalidCommand() {
+        Submission s = getSubmissionInReturnState();
+        assertThrows(UnsupportedOperationException.class, () ->
+            s.update(new Command(CommandValue.ASSIGN, "grader1")));
     }
 
 }
