@@ -225,6 +225,10 @@ public class Submission {
 	            && !grade.equals(GRADE_F_RETURN) && !grade.equals(GRADE_F_AIV_RETURN)) {
 	        throw new IllegalArgumentException("Submission cannot be created.");
 	    }
+	    
+	    if (published && !stateName.equals(RETURN_NAME)) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
 	}
 
 	/**
