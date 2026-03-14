@@ -106,7 +106,7 @@ public class AssignmentTest {
     @Test
     public void testAddSubmissionObject() {
     	Assignment a = new Assignment(NAME, CATEGORY, MAX_POINTS);
-        Submission s = new Submission(5, "Upload", "Sydney Hart", "sehart", false, "Not Done", false, "sesmith", "A");
+        Submission s = new Submission(5, "Upload", "Sydney Hart", "sehart", false, "Not Done", false, null, null);
         int id = a.addSubmission(s);
         assertEquals(id, s.getId());
         assertEquals(1, a.getSubmissions().size());
@@ -120,7 +120,7 @@ public class AssignmentTest {
     	Assignment a = new Assignment(NAME, CATEGORY, MAX_POINTS);
         Submission s1 = new Submission("Sydney Hart", "sehart");
         a.addSubmission(s1);
-        Submission duplicate = new Submission(s1.getId(), "Upload", "Katie Hart", "kbhart", false, "Not Done", false, "sehart", "B");
+        Submission duplicate = new Submission(s1.getId(), "Upload", "Katie Hart", "kbhart", false, "Not Done", false, null, null);
         Exception e = assertThrows(IllegalArgumentException.class, () ->
             a.addSubmission(duplicate));
         assertEquals("Submission cannot be created.", e.getMessage());

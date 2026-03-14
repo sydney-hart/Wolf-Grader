@@ -19,7 +19,9 @@ public class SubmissionTest {
 	/** Submission ID **/
 	private static final int SUBMISSION_ID = 5;
 	/** Initial Submission state **/
-	private static final String STATE = "Upload";
+	private static final String STATE1 = "Upload";
+	/** Initial Submission state with grader and grade **/
+	private static final String STATE2 = "Check";
 	/** Student's name **/
 	private static final String NAME = "Sydney Hart";
 	/** Student's unity id **/
@@ -27,7 +29,7 @@ public class SubmissionTest {
 	/** Initial Plagiarism check value**/
 	private static final String CHECK_RESULT = "Not Done";
 	/** Initial feedback processed value **/
-	private static final boolean FEEDBACK_PROCESSED = false;
+	private static final boolean FEEDBACK_PROCESSED = true;
 	/** Initial published value **/
 	private static final boolean PUBLISHED = false;
 	/** Submission grader **/
@@ -72,12 +74,12 @@ public class SubmissionTest {
     @Test
     public void testSubmissionConstructorFull() {
     	Submission s = assertDoesNotThrow(
-        		() -> new Submission(SUBMISSION_ID, STATE, NAME, UNITY_ID, FEEDBACK_PROCESSED,
+        		() -> new Submission(SUBMISSION_ID, STATE2, NAME, UNITY_ID, FEEDBACK_PROCESSED,
         				CHECK_RESULT, PUBLISHED, GRADER, GRADE));
         
         assertAll("Submission",
         		() -> assertEquals(SUBMISSION_ID, s.getId(), "incorrect submission ID"),
-        		() -> assertEquals(STATE, s.getState(), "incorrect state"),
+        		() -> assertEquals(STATE2, s.getState(), "incorrect state"),
         		() -> assertEquals(NAME, s.getName(), "incorrect name"),
         		() -> assertEquals(UNITY_ID, s.getUnityId(), "incorrect unity ID"),
         		() -> assertEquals(FEEDBACK_PROCESSED, s.isFeedbackProcessed(), "incorrect feedback processed"),
@@ -149,10 +151,10 @@ public class SubmissionTest {
      */
     @Test
     public void testToString() {
-        Submission s = new Submission(SUBMISSION_ID, STATE, NAME, UNITY_ID, FEEDBACK_PROCESSED,
-				CHECK_RESULT, PUBLISHED, GRADER, GRADE);
+        Submission s = new Submission(SUBMISSION_ID, STATE1, NAME, UNITY_ID, FEEDBACK_PROCESSED,
+				CHECK_RESULT, PUBLISHED, null, null);
 
-        String expected = "* 5,Upload,Sydney Hart,sehart,false,Not Done,false,sesmith,A";
+        String expected = "* 5,Upload,Sydney Hart,sehart,true,Not Done,false,,";
 
         assertEquals(expected, s.toString());
     }
@@ -173,8 +175,8 @@ public class SubmissionTest {
      */
     @Test
     public void testStateChangesReviseA() {
-    	Submission s = new Submission(SUBMISSION_ID, STATE, NAME, UNITY_ID, FEEDBACK_PROCESSED,
-				CHECK_RESULT, PUBLISHED, GRADER, GRADE);
+    	Submission s = new Submission(SUBMISSION_ID, STATE1, NAME, UNITY_ID, false,
+				CHECK_RESULT, PUBLISHED, null, null);
     	assertEquals("Upload", s.getState(), "incorrect state: UPLOAD");
     	
     	Command assign = new Command(CommandValue.ASSIGN, "sesmith");

@@ -116,13 +116,111 @@ public class Submission {
 			}
 		}
 		setFeedbackProcessed(feedbackProcessed);
+		setState(state);
 		setName(name);
 		setUnityId(unityId);
 		setCheckResult(checkResult);
 		setPublished(published);
 		setGrader(grader);
 		setGrade(grade);
+		validateSubmission();
 		setId(submissionId);
+	}
+	
+	private void validateSubmission() {
+	    String stateName = currentState.getStateName();
+	    
+	    // A submission in Submitted, Grade, Check, Return or Regrade state should not have processed = false
+	    if (!feedbackProcessed && (stateName.equals(SUBMITTED_NAME) || stateName.equals(GRADE_NAME)
+	            || stateName.equals(CHECK_NAME) || stateName.equals(RETURN_NAME)
+	            || stateName.equals(REGRADE_NAME))) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
+	    // A submission in Upload or Submitted state with a grader
+	    if (!grader.equals("") && (stateName.equals(UPLOAD_NAME) || stateName.equals(SUBMITTED_NAME))) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
+	    // A submission in Feedback, Grade, Check, Return or Regrade without a grader
+	    if (grader.equals("") && (stateName.equals(FEEDBACK_NAME) || stateName.equals(GRADE_NAME)
+	            || stateName.equals(CHECK_NAME) || stateName.equals(RETURN_NAME)
+	            || stateName.equals(REGRADE_NAME))) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
+	    // A submission in Upload, Feedback, Submitted or Check state with Passed or Failed check result
+	    if ((checkResult.equals(PlagiarismCheckResult.PASS) || checkResult.equals(PlagiarismCheckResult.FAIL))
+	            && (stateName.equals(UPLOAD_NAME) || stateName.equals(FEEDBACK_NAME)
+	            || stateName.equals(SUBMITTED_NAME) || stateName.equals(CHECK_NAME))) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
+	    // A submission in Regrade state with Failed or Not Done check result
+	    if ((checkResult.equals(PlagiarismCheckResult.FAIL) || checkResult.equals(PlagiarismCheckResult.NONE))
+	            && stateName.equals(REGRADE_NAME)) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
+	    // A submission in Return state with Not Done check result
+	    if (checkResult.equals(PlagiarismCheckResult.NONE) && stateName.equals(RETURN_NAME)) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
+	    // A submission in Upload, Feedback, or Submitted state with a grade
+	    if (!grade.equals("") && (stateName.equals(UPLOAD_NAME) || stateName.equals(FEEDBACK_NAME)
+	            || stateName.equals(SUBMITTED_NAME))) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
+	    // A submission in Check, Regrade, or Return state without a grade
+	    if (grade.equals("") && (stateName.equals(CHECK_NAME) || stateName.equals(REGRADE_NAME)
+	            || stateName.equals(RETURN_NAME))) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
+	    // A submission in Grade or Check state with F-AIV or IN grade
+	    if ((grade.equals(GRADE_F_AIV_RETURN) || grade.equals(GRADE_IN_RETURN))
+	            && (stateName.equals(GRADE_NAME) || stateName.equals(CHECK_NAME))) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
+	    // A submission in Grade state with check result Not Done with a letter grade
+	    if (stateName.equals(GRADE_NAME) && checkResult.equals(PlagiarismCheckResult.NONE)
+	            && !grade.equals("")) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
+	    // A submission in Check state without a letter grade (A, B, C, F)
+	    if (stateName.equals(CHECK_NAME) && !grade.equals(GRADE_A_RETURN) && !grade.equals(GRADE_B_RETURN)
+	            && !grade.equals(GRADE_C_RETURN) && !grade.equals(GRADE_F_RETURN)) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
+	    // A submission with check result Failed in Return state with a letter grade
+	    if (stateName.equals(RETURN_NAME) && checkResult.equals(PlagiarismCheckResult.FAIL)
+	            && (grade.equals(GRADE_A_RETURN) || grade.equals(GRADE_B_RETURN)
+	            || grade.equals(GRADE_C_RETURN) || grade.equals(GRADE_F_RETURN))) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
+	    // A submission with check result Passed in Return state with F-AIV or IN grade
+	    if (stateName.equals(RETURN_NAME) && checkResult.equals(PlagiarismCheckResult.PASS)
+	            && (grade.equals(GRADE_F_AIV_RETURN) || grade.equals(GRADE_IN_RETURN))) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
+	    // A submission that is published with IN grade in Return state
+	    if (published && stateName.equals(RETURN_NAME) && grade.equals(GRADE_IN_RETURN)) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
+	    // A submission that is published in Return state without a letter grade
+	    if (published && stateName.equals(RETURN_NAME) && !grade.equals(GRADE_A_RETURN)
+	            && !grade.equals(GRADE_B_RETURN) && !grade.equals(GRADE_C_RETURN)
+	            && !grade.equals(GRADE_F_RETURN)) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
 	}
 
 	/**
