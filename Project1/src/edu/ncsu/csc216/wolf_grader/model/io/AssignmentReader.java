@@ -77,6 +77,9 @@ public class AssignmentReader {
 	        }
 	    }
 	    in.close();
+	    if (assignment.getSubmissions().isEmpty()) {
+	        throw new IllegalArgumentException("Assignment has no valid submissions");
+	    }
 	    return assignment;
 	}
 	
