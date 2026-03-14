@@ -18,9 +18,9 @@ public class WolfGrader {
 
 	/** Single interface of WolfGrader **/
 	private static WolfGrader singleton;
-	/** **/
+	/** List of assignments **/
 	private ArrayList<Assignment> assignments;
-	/** **/
+	/** Assignment currently being edited **/
 	private Assignment activeAssignment;
 	
 	/**
@@ -75,7 +75,7 @@ public class WolfGrader {
 	public void addNewAssignment(String assignmentName, String assignmentCategory, int maxPoints) {
 		for (Assignment a: assignments) {
 			if (a.getAssignmentName().equals(assignmentName))   {
-				throw new IllegalArgumentException("Assignment not available");
+				throw new IllegalArgumentException("Assignment cannot be created.");
 			}
 		}
 		Assignment assignment = new Assignment(assignmentName, assignmentCategory, maxPoints);
@@ -98,7 +98,7 @@ public class WolfGrader {
 	        }
 	    }
 	    if (!found) {
-	        throw new IllegalArgumentException("Assignment not available.");
+	        throw new IllegalArgumentException("Assignment cannot be created.");
 	    }
 	}
 	
