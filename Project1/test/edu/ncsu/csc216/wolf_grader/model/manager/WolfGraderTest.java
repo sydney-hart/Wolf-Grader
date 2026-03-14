@@ -71,7 +71,7 @@ class WolfGraderTest {
     	assertEquals(expected.getMaxPoints(), manager.getActiveAssignment().getMaxPoints());
     	Exception e = assertThrows(IllegalArgumentException.class, () ->
     		manager.addNewAssignment("Practice Problems", "Homework", 50));
-    	assertEquals("Assignment not available", e.getMessage());
+    	assertEquals("Assignment cannot be created.", e.getMessage());
     }
     
     /**
@@ -86,7 +86,7 @@ class WolfGraderTest {
     	
     	Exception e = assertThrows(IllegalArgumentException.class, () ->
     			manager.loadAssignment("Practice Problems"));
-    	assertEquals("Assignment not available.", e.getMessage());
+    	assertEquals("Assignment cannot be created.", e.getMessage());
     }
     
     /**
