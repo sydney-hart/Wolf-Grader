@@ -616,31 +616,24 @@ public class Submission {
 					break;
 				case CommandValue.SUBMIT:
 					assignmentGrade = command.getCommandInformation();
-					if (assignmentGrade.equals(GRADE_IN_RETURN)) {
-						throw new UnsupportedOperationException("Invalid information.");
-					}
-					if (assignmentGrade.equals(GRADE_F_AIV_RETURN)) {
-						 setCheckResult(PC_FAIL);
-					} else {
-						setCheckResult(PC_PASS);
-					}
 					if (checkResult.equals(PlagiarismCheckResult.NONE)) {
 						throw new UnsupportedOperationException("Invalid information.");
 					}
-					switch (checkResult) {
-						case FAIL:
+					if (checkResult.equals(PlagiarismCheckResult.PASS)) {
+						if (assignmentGrade.equals(GRADE_F_AIV_RETURN) || assignmentGrade.equals(GRADE_IN_RETURN)) {
+							throw new UnsupportedOperationException("Invalid information");
+						}
+						grade = assignmentGrade;
+						currentState = returnState;
+					} else {
+						if (assignmentGrade.equals(GRADE_F_AIV_RETURN) || assignmentGrade.equals(GRADE_IN_RETURN)) {
 							grade = assignmentGrade;
 							currentState = returnState;
-							break;
-						case PASS:
-							if (assignmentGrade.equals(GRADE_F_AIV_RETURN) || assignmentGrade.equals(GRADE_IN_RETURN)) {
-								throw new UnsupportedOperationException("Invalid informtaion.");
-							}
+						} else {
+							setCheckResult(PC_PASS);
 							grade = assignmentGrade;
 							currentState = returnState;
-							break;
-						default:
-							throw new UnsupportedOperationException("Invalid information.");
+						}
 					}
 					break;
 				default:
