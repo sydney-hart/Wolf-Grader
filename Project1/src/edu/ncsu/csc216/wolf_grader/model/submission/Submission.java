@@ -194,7 +194,6 @@ public class Submission {
 	        throw new IllegalArgumentException("Submission cannot be created.");
 	    }
 	    
-	    // A submission with check result Failed in Return state with a letter grade
 	    if (stateName.equals(RETURN_NAME) && checkResult.equals(PlagiarismCheckResult.FAIL)
 	            && (grade.equals(GRADE_A_RETURN) || grade.equals(GRADE_B_RETURN)
 	            || grade.equals(GRADE_C_RETURN) || grade.equals(GRADE_F_RETURN))) {
@@ -388,7 +387,7 @@ public class Submission {
 	/**
 	 * Returns the Submission's state
 	 * 
-	 * @return
+	 * @return the String value that represents the state
 	 */
 	public String getState() {
 		return currentState.getStateName();
@@ -855,7 +854,7 @@ public class Submission {
 			String assignmentGrade = "";
 			switch (command.getCommand()) {
 				case RESOLVE:
-					if (!grade.equals("IN")) {
+					if (!"IN".equals(grade)) {
 						throw new UnsupportedOperationException("Invalid information.");
 					}
 					assignmentGrade = command.getCommandInformation();

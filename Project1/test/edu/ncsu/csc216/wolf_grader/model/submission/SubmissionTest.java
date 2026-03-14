@@ -170,132 +170,198 @@ public class SubmissionTest {
         assertEquals("Invalid command.", e.getMessage());
     }
     
+    /**
+     * Test invalid null state
+     */
     @Test
     public void testInvalidNullState() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, null, "Sydney Hart", "sehart", false, "Not Done", false, "", ""));
     }
 
+    /**
+     * Test invalid nonexistent state
+     */
     @Test
     public void testInvalidBadState() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "BadState", "Sydney Hart", "sehart", false, "Not Done", false, "", ""));
     }
 
+    /**
+     * Test invalid feedback value FeedbackState
+     */
     @Test
     public void testInvalidFeedbackProcessedInFeedback() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Feedback", "Sydney Hart", "sehart", true, "Not Done", false, "grader1", ""));
     }
 
+    /**
+     * Test invalid feedback value Submitted
+     */
     @Test
     public void testInvalidFeedbackProcessedFalseInSubmitted() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Submitted", "Sydney Hart", "sehart", false, "Not Done", false, "", ""));
     }
 
+    /**
+     * Test invalid grader value Submitted
+     */
     @Test
     public void testInvalidGraderInSubmitted() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Submitted", "Sydney Hart", "sehart", true, "Not Done", false, "grader1", ""));
     }
 
+    /**
+     * Test invalid grader Feedback
+     */
     @Test
     public void testInvalidNoGraderInFeedback() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Feedback", "Sydney Hart", "sehart", false, "Not Done", false, "", ""));
     }
 
+    /**
+     * Test invalid check value Upload
+     */
     @Test
     public void testInvalidPassedCheckInUpload() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Upload", "Sydney Hart", "sehart", false, "Passed", false, "", ""));
     }
 
+    /**
+     * Test invalid check value Feedback
+     */
     @Test
     public void testInvalidPassedCheckInFeedback() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Feedback", "Sydney Hart", "sehart", false, "Passed", false, "grader1", ""));
     }
 
+    /**
+     * Test invalid check value Submitted
+     */
     @Test
     public void testInvalidPassedCheckInSubmitted() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Submitted", "Sydney Hart", "sehart", true, "Passed", false, "", ""));
     }
 
+    /**
+     * Test invalid check value Check
+     */
     @Test
     public void testInvalidPassedCheckInCheck() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Check", "Sydney Hart", "sehart", true, "Passed", false, "grader1", "A"));
     }
 
+    /**
+     * Test invalid regrade value Failed
+     */
     @Test
     public void testInvalidRegradeWithFailed() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Regrade", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "A"));
     }
 
+    /**
+     * Test invalid regrade value FAIV
+     */
     @Test
     public void testInvalidRegradeWithFAIV() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Regrade", "Sydney Hart", "sehart", true, "Passed", false, "grader1", "F-AIV"));
     }
 
+    /**
+     * Test invalid return value Not Done
+     */
     @Test
     public void testInvalidReturnNoDone() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Return", "Sydney Hart", "sehart", true, "Not Done", false, "grader1", "A"));
     }
 
+    /**
+     * Test invalid return value FAIV
+     */
     @Test
     public void testInvalidReturnPassedWithFAIV() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Return", "Sydney Hart", "sehart", true, "Passed", false, "grader1", "F-AIV"));
     }
 
+    /**
+     * Test invalid return value IN
+     */
     @Test
     public void testInvalidReturnPassedWithIN() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Return", "Sydney Hart", "sehart", true, "Passed", false, "grader1", "IN"));
     }
 
+    /**
+     * Test invalid return failing with letter grade
+     */
     @Test
     public void testInvalidReturnFailedWithLetterGrade() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Return", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "A"));
     }
 
+    /**
+     * Test invalid published value Upload
+     */
     @Test
     public void testInvalidPublishedNotReturn() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Upload", "Sydney Hart", "sehart", false, "Not Done", true, "", ""));
     }
 
+    /**
+     * Test invalid published value IN
+     */
     @Test
     public void testInvalidPublishedWithIN() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Return", "Sydney Hart", "sehart", true, "Failed", true, "grader1", "IN"));
     }
 
+    /**
+     * Test invalid grade Upload
+     */
     @Test
     public void testInvalidGradeInUpload() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Upload", "Sydney Hart", "sehart", false, "Not Done", false, "", "A"));
     }
 
+    /**
+     * Test invalid grade Check
+     */
     @Test
     public void testInvalidNoGradeInCheck() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Check", "Sydney Hart", "sehart", true, "Not Done", false, "grader1", ""));
     }
 
+    /**
+     * Test invalid FAIV Check
+     */
     @Test
     public void testInvalidFAIVInCheck() {
         assertThrows(IllegalArgumentException.class, () ->
             new Submission(1, "Check", "Sydney Hart", "sehart", true, "Not Done", false, "grader1", "F-AIV"));
     }
 
+    /**
+     * Test invalid checkResult value Grade 
+     */
     @Test
     public void testInvalidGradeStateNotDoneWithGrade() {
         assertThrows(IllegalArgumentException.class, () ->
@@ -368,6 +434,10 @@ public class SubmissionTest {
     	assertTrue(s.isPublished());
     }
     
+    /**
+     * Upload State Test
+     * Tests valid Upload > Feedback transition
+     */
     @Test
     public void testUploadAssignTransitionToFeedback() {
         Submission s = new Submission("Sydney Hart", "sehart");
@@ -376,15 +446,24 @@ public class SubmissionTest {
         assertEquals("grader1", s.getGrader());
     }
 
+    /**
+     * Upload State Test
+     * Test correct exception thrown for Assign
+     */
     @Test
     public void testUploadAssignFailsWhenFeedbackProcessed() {
         Submission s = new Submission("Sydney Hart", "sehart");
         s.update(new Command(CommandValue.ASSIGN, "grader1"));
         s.update(new Command(CommandValue.PROVIDE, null));
-        assertThrows(UnsupportedOperationException.class, () ->
+        Exception e = assertThrows(UnsupportedOperationException.class, () ->
             s.update(new Command(CommandValue.ASSIGN, "grader1")));
+        assertEquals("Invalid information.", e.getMessage());
     }
 
+    /**
+     * Upload State Test
+     * Test valid Upload > Submitted Transition
+     */
     @Test
     public void testUploadMoveToSubmitted() {
         Submission s = new Submission("Sydney Hart", "sehart");
@@ -394,6 +473,10 @@ public class SubmissionTest {
         assertEquals("Submitted", s.getState());
     }
 
+    /**
+     * Upload State Test
+     * Test valid Upload > Reupload transition
+     */
     @Test
     public void testUploadReupload() {
         Submission s = new Submission("Sydney Hart", "sehart");
@@ -403,6 +486,10 @@ public class SubmissionTest {
         assertEquals("Upload", s.getState());
     }
 
+    /**
+     * Upload State Test
+     * Tests exception thrown for invalid reupload
+     */
     @Test
     public void testUploadReuploadFailsWithoutFeedback() {
         Submission s = new Submission("Sydney Hart", "sehart");
@@ -410,6 +497,10 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.REUPLOAD, null)));
     }
 
+    /**
+     * Upload State Test
+     * Test valid Upload > Move transition
+     */
     @Test
     public void testUploadMoveFailsWithoutFeedback() {
         Submission s = new Submission("Sydney Hart", "sehart");
@@ -417,6 +508,10 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.MOVE, null)));
     }
 
+    /**
+     * Upload State Test
+     * Test exception thrown for invalid submit
+     */
     @Test
     public void testUploadInvalidCommand() {
         Submission s = new Submission("Sydney Hart", "sehart");
@@ -424,8 +519,9 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.SUBMIT, "A")));
     }
 
-    // FEEDBACK STATE TESTS
-
+    /**
+     * Feedback State Test Provide
+     */
     @Test
     public void testFeedbackProvideTransition() {
         Submission s = new Submission("Sydney Hart", "sehart");
@@ -436,6 +532,9 @@ public class SubmissionTest {
         assertEquals("", s.getGrader());
     }
 
+    /**
+     * Feedback State Test Submit
+     */
     @Test
     public void testFeedbackInvalidCommand() {
         Submission s = new Submission("Sydney Hart", "sehart");
@@ -444,8 +543,9 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.SUBMIT, "A")));
     }
 
-    // SUBMITTED STATE TESTS
-
+    /**
+     * Submitted State Test Grade
+     */
     @Test
     public void testSubmittedAssignToGrade() {
         Submission s = new Submission("Sydney Hart", "sehart");
@@ -457,6 +557,9 @@ public class SubmissionTest {
         assertEquals("grader2", s.getGrader());
     }
 
+    /**
+     * Submitted State Test Invalid Command
+     */
     @Test
     public void testSubmittedInvalidCommand() {
         Submission s = new Submission("Sydney Hart", "sehart");
@@ -467,10 +570,11 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.SUBMIT, "A")));
     }
 
-    // ========================
-    // GRADE STATE TESTS
-    // ========================
-
+    /**
+    * Helper method for creating Submission in the Grade state
+    * 
+    * @return submission already in the grade state
+    */
     private Submission getSubmissionInGradeState() {
         Submission s = new Submission("Sydney Hart", "sehart");
         s.update(new Command(CommandValue.ASSIGN, "grader1"));
@@ -480,6 +584,9 @@ public class SubmissionTest {
         return s;
     }
 
+    /**
+     * Grade State Test Check
+     */
     @Test
     public void testGradeAnalyzeToCheck() {
         Submission s = getSubmissionInGradeState();
@@ -488,6 +595,9 @@ public class SubmissionTest {
         assertEquals("A", s.getGrade());
     }
 
+    /**
+     * Grade State Test Invalid
+     */
     @Test
     public void testGradeAnalyzeFailsWhenNotNone() {
         Submission s = new Submission(1, "Grade", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "");
@@ -495,6 +605,9 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.ANALYZE, "A")));
     }
 
+    /**
+     * Grade State Test Passing Letter Grade
+     */
     @Test
     public void testGradeSubmitPassedLetterGrade() {
         Submission s = new Submission(1, "Grade", "Sydney Hart", "sehart", true, "Passed", false, "grader1", "");
@@ -503,6 +616,9 @@ public class SubmissionTest {
         assertEquals("B", s.getGrade());
     }
 
+    /**
+     * Grade State Test Failing FAIV
+     */
     @Test
     public void testGradeSubmitFailedFAIV() {
         Submission s = new Submission(1, "Grade", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "");
@@ -511,6 +627,9 @@ public class SubmissionTest {
         assertEquals("F-AIV", s.getGrade());
     }
 
+    /**
+     * Grade State Test Failing IN
+     */
     @Test
     public void testGradeSubmitFailedIN() {
         Submission s = new Submission(1, "Grade", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "");
@@ -519,6 +638,10 @@ public class SubmissionTest {
         assertEquals("IN", s.getGrade());
     }
 
+    /**
+     * Grade State Test
+     * Failed to Passed
+     */
     @Test
     public void testGradeSubmitFailedLetterGradeResetsToPass() {
         Submission s = new Submission(1, "Grade", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "");
@@ -527,6 +650,9 @@ public class SubmissionTest {
         assertEquals("Passed", s.getCheckResult());
     }
 
+    /**
+     * Grade State Test Invalid Submit
+     */
     @Test
     public void testGradeSubmitNoneThrows() {
         Submission s = getSubmissionInGradeState();
@@ -534,6 +660,9 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.SUBMIT, "A")));
     }
 
+    /**
+     * Grade State Test Invalid Passing Grade
+     */
     @Test
     public void testGradeSubmitPassedFAIVThrows() {
         Submission s = new Submission(1, "Grade", "Sydney Hart", "sehart", true, "Passed", false, "grader1", "");
@@ -541,6 +670,9 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.SUBMIT, "F-AIV")));
     }
 
+    /**
+     * Grade State Test Invalid Command
+     */
     @Test
     public void testGradeInvalidCommand() {
         Submission s = getSubmissionInGradeState();
@@ -548,8 +680,9 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.PUBLISH, null)));
     }
 
-    // CHECK STATE TESTS
-
+    /**
+     * Check State Test Return
+     */
     @Test
     public void testCheckPassToReturn() {
         Submission s = getSubmissionInGradeState();
@@ -559,6 +692,9 @@ public class SubmissionTest {
         assertEquals("Passed", s.getCheckResult());
     }
 
+    /**
+     * Check State Test Failing Check
+     */
     @Test
     public void testCheckFailToGrade() {
         Submission s = getSubmissionInGradeState();
@@ -568,6 +704,9 @@ public class SubmissionTest {
         assertEquals("Failed", s.getCheckResult());
     }
 
+    /**
+     * Check State Test Invalid Command
+     */
     @Test
     public void testCheckInvalidCommand() {
         Submission s = getSubmissionInGradeState();
@@ -576,8 +715,11 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.SUBMIT, "A")));
     }
 
-    // REGRADE STATE TESTS
-
+    /**
+     * Helper method that creates submission already in the Regrade State
+     * 
+     * @return submission in the regrade state
+     */
     private Submission getSubmissionInReturnState() {
         Submission s = getSubmissionInGradeState();
         s.update(new Command(CommandValue.ANALYZE, "A"));
@@ -585,6 +727,9 @@ public class SubmissionTest {
         return s;
     }
 
+    /**
+     * Test Regrade State Grade
+     */
     @Test
     public void testRegradeProcessToGrade() {
         Submission s = getSubmissionInReturnState();
@@ -593,6 +738,9 @@ public class SubmissionTest {
         assertEquals("Grade", s.getState());
     }
 
+    /**
+     * Test Regrade Invalid Command
+     */
     @Test
     public void testRegradeInvalidCommand() {
         Submission s = getSubmissionInReturnState();
@@ -601,8 +749,9 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.PUBLISH, null)));
     }
 
-    // RETURN STATE TESTS
-
+    /**
+     * Test Return State Publish
+     */
     @Test
     public void testReturnPublish() {
         Submission s = getSubmissionInReturnState();
@@ -611,6 +760,9 @@ public class SubmissionTest {
         assertEquals("Return", s.getState());
     }
 
+    /**
+     * Test Return State Invalid Published Value
+     */
     @Test
     public void testReturnPublishAlreadyPublishedThrows() {
         Submission s = getSubmissionInReturnState();
@@ -619,6 +771,9 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.PUBLISH, null)));
     }
 
+    /**
+     * Test Return State Regrade
+     */
     @Test
     public void testReturnRequestRegrade() {
         Submission s = getSubmissionInReturnState();
@@ -626,6 +781,9 @@ public class SubmissionTest {
         assertEquals("Regrade", s.getState());
     }
 
+    /**
+     * Test Return State Failing IN
+     */
     @Test
     public void testReturnRequestRegradeFailsWithIN() {
         Submission s = new Submission(1, "Return", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "IN");
@@ -633,6 +791,9 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.REQUEST, null)));
     }
 
+    /**
+     * Test Return State Failing FAIV
+     */
     @Test
     public void testReturnRequestRegradeFailsWithFAIV() {
         Submission s = new Submission(1, "Return", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "F-AIV");
@@ -640,6 +801,9 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.REQUEST, null)));
     }
 
+    /**
+     * Test Return State Resolve IN
+     */
     @Test
     public void testReturnResolveIN() {
         Submission s = new Submission(1, "Return", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "IN");
@@ -649,6 +813,9 @@ public class SubmissionTest {
         assertEquals("Passed", s.getCheckResult());
     }
 
+    /**
+     * Test Return State Resolve to FAIV
+     */
     @Test
     public void testReturnResolveINToFAIV() {
         Submission s = new Submission(1, "Return", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "IN");
@@ -658,6 +825,9 @@ public class SubmissionTest {
         assertEquals("Failed", s.getCheckResult());
     }
 
+    /**
+     * Test Return State Invalid Resolve
+     */
     @Test
     public void testReturnResolveFailsWhenNotIN() {
         Submission s = getSubmissionInReturnState();
@@ -665,6 +835,9 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.RESOLVE, "B")));
     }
 
+    /**
+     * Test Return State Invalid Publish
+     */
     @Test
     public void testReturnPublishFailsWithIN() {
         Submission s = new Submission(1, "Return", "Sydney Hart", "sehart", true, "Failed", false, "grader1", "IN");
@@ -672,6 +845,9 @@ public class SubmissionTest {
             s.update(new Command(CommandValue.PUBLISH, null)));
     }
 
+    /**
+     * Test Return State Invalid Command
+     */
     @Test
     public void testReturnInvalidCommand() {
         Submission s = getSubmissionInReturnState();

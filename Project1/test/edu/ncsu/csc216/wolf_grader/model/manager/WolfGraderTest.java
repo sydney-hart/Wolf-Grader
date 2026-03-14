@@ -30,7 +30,7 @@ class WolfGraderTest {
 	/**
 	 * Resets the single instance of the WolfGrader
 	 * 
-	 * @throws Exception
+	 * @throws Exception if the files are not reset
 	 */
     @BeforeEach
     void setUp() throws Exception {
