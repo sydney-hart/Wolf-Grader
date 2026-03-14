@@ -26,7 +26,7 @@ public class WolfGrader {
 	/**
 	 * Constructs a WolfGrader object
 	 */
-	public WolfGrader() {
+	private WolfGrader() {
 		assignments = new ArrayList<>();
 		activeAssignment = null;
 		Submission.setCounter(0);	}
