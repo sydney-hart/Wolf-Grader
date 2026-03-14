@@ -214,6 +214,12 @@ public class Submission {
 	        throw new IllegalArgumentException("Submission cannot be created.");
 	    }
 	    
+	    if (stateName.equals(REGRADE_NAME) && !grade.equals(GRADE_A_RETURN) 
+	            && !grade.equals(GRADE_B_RETURN) && !grade.equals(GRADE_C_RETURN) 
+	            && !grade.equals(GRADE_F_RETURN)) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
 	    // A submission that is published with IN grade in Return state
 	    if (published && stateName.equals(RETURN_NAME) && grade.equals(GRADE_IN_RETURN)) {
 	        throw new IllegalArgumentException("Submission cannot be created.");
