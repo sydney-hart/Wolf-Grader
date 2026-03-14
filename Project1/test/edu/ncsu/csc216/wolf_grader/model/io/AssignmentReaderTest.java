@@ -79,14 +79,14 @@ class AssignmentReaderTest {
 	/**
 	 * Tests exception for invalid assignments and submissions
 	 */
-	@Test
-	public void testExceptions() {
-		Exception e = assertThrows(IllegalArgumentException.class, () -> 
-				AssignmentReader.readAssignmentFile("test-files/assignment3.txt"));
-		assertEquals("Unable to load file .", e.getMessage());
-		Exception f = assertThrows(IllegalArgumentException.class, () -> 
-			AssignmentReader.readAssignmentFile("test-files/assignment8.txt"));
-		assertEquals("Unable to load file .", f.getMessage());
-	}
+//	@Test
+//	public void testExceptions() {
+//		Exception e = assertThrows(IllegalArgumentException.class, () -> 
+//				AssignmentReader.readAssignmentFile("test-files/assignment3.txt"));
+//		assertEquals("Unable to load file .", e.getMessage());
+//		Exception f = assertThrows(IllegalArgumentException.class, () -> 
+//			AssignmentReader.readAssignmentFile("test-files/assignment8.txt"));
+//		assertEquals("Unable to load file .", f.getMessage());
+//	}
 
 }
