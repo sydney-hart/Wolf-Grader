@@ -175,9 +175,6 @@ public class Submission {
 				this.currentState = checkState;
 				break;
 			case "RETURN":
-				if (checkResult.equals(PlagiarismCheckResult.FAIL)) {
-					throw new IllegalArgumentException("Submission cannot be created.");
-				}
 				this.currentState = returnState;
 				break;
 			default:
