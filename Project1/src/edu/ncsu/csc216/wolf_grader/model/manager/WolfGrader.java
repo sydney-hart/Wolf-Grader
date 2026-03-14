@@ -73,13 +73,12 @@ public class WolfGrader {
 	 * @param maxPoints maximum number of points for the assignment
 	 */
 	public void addNewAssignment(String assignmentName, String assignmentCategory, int maxPoints) {
-		Assignment assignment = new Assignment(assignmentName, assignmentCategory, maxPoints);
 		for (Assignment a: assignments) {
-			if (a.getAssignmentName().equals(assignmentName) && a.getAssignmentCategory().equals(assignmentCategory)
-					&& a.getMaxPoints() == maxPoints)   {
+			if (a.getAssignmentName().equals(assignmentName))   {
 				throw new IllegalArgumentException("Assignment not available");
 			}
 		}
+		Assignment assignment = new Assignment(assignmentName, assignmentCategory, maxPoints);
 		assignments.add(assignment);
 		loadAssignment(assignmentName);
 	}
