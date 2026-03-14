@@ -29,10 +29,12 @@ public class AssignmentWriter {
 			throw new IllegalArgumentException("Unable to save file.");
 		}
 		for (Assignment a: assignments) {
-			fileWriter.println(a.toString());
-			List<Submission> submissions = a.getSubmissions();
-			for (Submission s: submissions) {
-				fileWriter.println(s.toString());
+			if (!a.getSubmissions().isEmpty()) {
+				fileWriter.println(a.toString());
+				List<Submission> submissions = a.getSubmissions();
+				for (Submission s: submissions) {
+					fileWriter.println(s.toString());
+				}
 			}
 		}
 		fileWriter.close();
