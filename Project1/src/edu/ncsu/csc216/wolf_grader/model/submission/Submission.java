@@ -116,6 +116,11 @@ public class Submission {
 			}
 		}
 		setState(state);
+		if ((state.equals(RETURN_NAME) || state.equals(CHECK_NAME) 
+		        || state.equals(REGRADE_NAME) || state.equals(GRADE_NAME)
+		        || state.equals(SUBMITTED_NAME)) && !feedbackProcessed) {
+		    throw new IllegalArgumentException("Submission cannot be created.");
+		}
 		setFeedbackProcessed(feedbackProcessed);
 		setName(name);
 		setUnityId(unityId);
