@@ -137,6 +137,10 @@ public class Submission {
 	        throw new IllegalArgumentException("Submission cannot be created.");
 	    }
 	    
+	    if (feedbackProcessed && stateName.equals(FEEDBACK_NAME)) {
+	        throw new IllegalArgumentException("Submission cannot be created.");
+	    }
+	    
 	    // A submission in Upload or Submitted state with a grader
 	    if (!grader.equals("") && (stateName.equals(UPLOAD_NAME) || stateName.equals(SUBMITTED_NAME))) {
 	        throw new IllegalArgumentException("Submission cannot be created.");
@@ -218,7 +222,7 @@ public class Submission {
 	    // A submission that is published in Return state without a letter grade
 	    if (published && stateName.equals(RETURN_NAME) && !grade.equals(GRADE_A_RETURN)
 	            && !grade.equals(GRADE_B_RETURN) && !grade.equals(GRADE_C_RETURN)
-	            && !grade.equals(GRADE_F_RETURN)) {
+	            && !grade.equals(GRADE_F_RETURN) && !grade.equals(GRADE_F_AIV_RETURN)) {
 	        throw new IllegalArgumentException("Submission cannot be created.");
 	    }
 	}
