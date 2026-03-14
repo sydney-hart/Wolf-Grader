@@ -57,6 +57,7 @@ public class WolfGrader {
 	 * Saves all assignments to the specified file
 	 * 
 	 * @param fileName name of the file to save to
+	 * @throws IllegalArgumentException if the file cannot be saved
 	 */
 	public void saveAssignmentsToFile(String fileName) {
 		if (activeAssignment == null) {
@@ -71,6 +72,7 @@ public class WolfGrader {
 	 * @param assignmentName name of the assignment
 	 * @param assignmentCategory the category of the assignment
 	 * @param maxPoints maximum number of points for the assignment
+	 * @throws IllegalArgumentException if assignment already exists
 	 */
 	public void addNewAssignment(String assignmentName, String assignmentCategory, int maxPoints) {
 		for (Assignment a: assignments) {
@@ -87,6 +89,7 @@ public class WolfGrader {
 	 * Sets the active Assignment based on the provided name
 	 * 
 	 * @param assignmentName name of the assignment to activate
+	 * @throws IllegalArgumentException if assignment cannot be found
 	 */
 	public void loadAssignment(String assignmentName) {
 		boolean found = false;
@@ -143,6 +146,8 @@ public class WolfGrader {
 	 * 
 	 * @param name student's name
 	 * @param unityId student's unity ID
+	 * @throws IllegalArgumentException if there is already a submission with the same
+	 * 		   id number
 	 */
 	public void addSubmissionToAssignment(String name, String unityId) {
 		if (activeAssignment != null) {
@@ -187,7 +192,7 @@ public class WolfGrader {
 		List<Submission> submissions = activeAssignment.getSubmissions();
 		List<Submission> filtered = new ArrayList<Submission>();
 		for (Submission s: submissions) {
-			if (stateName.equals("All") || s.getState().equals(stateName)) {
+			if ("All".equals(stateName) || stateName.equals(s.getState())) {
 				filtered.add(s);
 			}
 		}
