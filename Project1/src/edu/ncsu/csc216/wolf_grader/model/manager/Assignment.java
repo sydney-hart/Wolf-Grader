@@ -49,7 +49,7 @@ public class Assignment {
 				maxId = s.getId();
 			}
 		}
-		Submission.setCounter(maxId);
+		Submission.setCounter(maxId + 1);
 	}
 	
 	/**
@@ -148,10 +148,12 @@ public class Assignment {
 				throw new IllegalArgumentException("Submission cannot be created.");
 			} else if (submissions.get(i).getId() > submission.getId()) {
 				submissions.add(i, submission);
+				setSubmissionId();
 				return submission.getId();
 			}
 		}
 		submissions.add(submission);
+		setSubmissionId();
 		return submission.getId();
 	}
 	
