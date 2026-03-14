@@ -183,7 +183,7 @@ public class WolfGrader {
 	 */
 	public String[][] getSubmissionsAsArray(String stateName) {
 		if (activeAssignment == null) {
-			return new String[0][0];
+			return null;
 		}
 		List<Submission> submissions = activeAssignment.getSubmissions();
 		List<Submission> filtered = new ArrayList<Submission>();
