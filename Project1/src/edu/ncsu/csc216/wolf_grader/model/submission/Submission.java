@@ -675,7 +675,7 @@ public class Submission {
 					currentState = gradeState;
 					break;
 				default:
-					throw new UnsupportedOperationException("Invalid command");
+					throw new UnsupportedOperationException("Invalid command.");
 			}
 		}
 
@@ -728,7 +728,7 @@ public class Submission {
 					}
 					if (checkResult.equals(PlagiarismCheckResult.PASS)) {
 						if (assignmentGrade.equals(GRADE_F_AIV_RETURN) || assignmentGrade.equals(GRADE_IN_RETURN)) {
-							throw new UnsupportedOperationException("Invalid information");
+							throw new UnsupportedOperationException("Invalid information.");
 						}
 						grade = assignmentGrade;
 						currentState = returnState;
@@ -744,7 +744,7 @@ public class Submission {
 					}
 					break;
 				default:
-					throw new UnsupportedOperationException("Invalid command");
+					throw new UnsupportedOperationException("Invalid command.");
 			}
 		}
 
@@ -787,7 +787,7 @@ public class Submission {
 					currentState = gradeState;
 					break;
 				default:
-					throw new UnsupportedOperationException("Invalid command");
+					throw new UnsupportedOperationException("Invalid command.");
 			}
 			
 			// TODO Auto-generated method stub
@@ -829,7 +829,7 @@ public class Submission {
 					currentState = gradeState;
 					break;
 				default:
-					throw new UnsupportedOperationException("Invalid command");
+					throw new UnsupportedOperationException("Invalid command.");
 			}
 		}
 
@@ -894,7 +894,7 @@ public class Submission {
 					currentState = returnState;
 					break;
 				default:
-					throw new UnsupportedOperationException("Invalid command");
+					throw new UnsupportedOperationException("Invalid command.");
 			}
 		}
 
