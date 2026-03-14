@@ -108,10 +108,8 @@ public class Submission {
 	 */
 	public Submission(int submissionId, String state, String name, String unityId,
 			boolean feedbackProcessed, String checkResult, boolean published, String grader, String grade) {
-		if (submissionId <= 0) {
-			if (!(counter == 0)) {
-				throw new IllegalArgumentException("Submission cannot be created.");
-			}
+		if (submissionId <= 0 && !(counter == 0)) {
+			throw new IllegalArgumentException("Submission cannot be created.");
 		}
 		setFeedbackProcessed(feedbackProcessed);
 		setState(state);
