@@ -194,7 +194,7 @@ public class WolfGrader {
 			Submission submission = filtered.get(i);
 			displaySubmissions[i][0] = Integer.toString(submission.getId());
 			displaySubmissions[i][1] = submission.getState();
-			displaySubmissions[i][2] = submission.getUnityId();
+			displaySubmissions[i][2] = submission.getName() + "(" + submission.getUnityId() + ")";
 			displaySubmissions[i][3] = submission.getCheckResult();
 		}
 		return displaySubmissions;
