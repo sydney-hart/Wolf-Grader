@@ -49,7 +49,7 @@ public class Assignment {
 				maxId = s.getId();
 			}
 		}
-		Submission.setCounter(maxId + 1);
+		Submission.setCounter(maxId);
 	}
 	
 	/**
