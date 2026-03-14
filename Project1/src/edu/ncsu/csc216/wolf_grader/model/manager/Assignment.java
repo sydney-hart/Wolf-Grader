@@ -78,7 +78,7 @@ public class Assignment {
 	/**
 	 * Sets the assignment category
 	 * 
-	 * @param assignmentCategory the assignmentCategory to set
+	 * @param category the assignmentCategory to set
 	 * @throws IllegalArgumentException if category name is null or empty
 	 */
 	private void setAssignmentCategory(String category) {
@@ -170,7 +170,7 @@ public class Assignment {
 	 * Retrieves a Submission by its unique ID
 	 * 
 	 * @param id the submission ID
-	 * @return the matching Submission
+	 * @return the matching Submission, or null if there is no matching submission
 	 */
 	public Submission getSubmissionById(int id) {
 		for (Submission s: submissions) {

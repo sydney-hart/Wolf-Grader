@@ -98,7 +98,7 @@ public class WolfGrader {
 	        }
 	    }
 	    if (!found) {
-	        throw new IllegalArgumentException("Assignment cannot be created.");
+	        throw new IllegalArgumentException("Assignment not available.");
 	    }
 	}
 	

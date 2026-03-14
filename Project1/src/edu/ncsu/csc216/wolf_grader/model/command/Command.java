@@ -27,9 +27,10 @@ public class Command {
 	/**
 	 * Constructs a Command with a specified type and associated information
 	 * 
-	 * @param command CommandValue representing the action to perform
+	 * @param commandValue CommandValue representing the action to perform
 	 * @param commandInformation additional information needed for the command
-	 * @throws IllegalArgumentException if command is not a valid parameter
+	 * @throws IllegalArgumentException if commandValue is not a valid parameter
+	 * 			or if commandInformation is missing (in certain scenarios)
 	 */
 	public Command(CommandValue commandValue, String commandInformation) {
 		if (commandValue == null) {

@@ -20,6 +20,7 @@ public class AssignmentWriter {
 	 * 
 	 * @param fileName file to write assignments to
 	 * @param assignments list of assignments to write
+	 * @throws IllegalArgumentException if the file cannot be saved
 	 */
 	public static void writeAssignmentsToFile(String fileName, List<Assignment> assignments) {
 		PrintStream fileWriter;

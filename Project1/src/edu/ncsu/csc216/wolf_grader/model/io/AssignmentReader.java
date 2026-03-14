@@ -23,6 +23,7 @@ public class AssignmentReader {
 	 * 
 	 * @param fileName file to read Assignment records from
 	 * @return a list of valid Assignments
+	 * @throws IllegalArgumentException if the filename cannot be found/cannot load
 	 */
 	public static ArrayList<Assignment> readAssignmentFile(String fileName) {
 		ArrayList<Assignment> assignments = new ArrayList<>();
@@ -57,6 +58,7 @@ public class AssignmentReader {
 	 * 
 	 * @param assignmentText the full text block for one assignment
 	 * @return the constructed Assignment object
+	 * @throw IllegalArgumentException if assignmentText does not exist/is empty
 	 */
 	private static Assignment processAssignment(String assignmentText) {
 		Scanner in = new Scanner(assignmentText);
@@ -88,6 +90,7 @@ public class AssignmentReader {
 	 * 
 	 * @param assignmentLine a line containing assignment information
 	 * @return Assignment object initialized with the data given
+	 * @throws IllegalArgumentException if any part of the Assignment values are invalid/don't exist
 	 */
 	private static Assignment processAssignmentLine(String assignmentLine) {
 	    Scanner lineScanner = new Scanner(assignmentLine);
@@ -109,6 +112,7 @@ public class AssignmentReader {
 	 * 
 	 * @param submissionLine line containing submission-specific information
 	 * @return Submission object created from data given
+	 * @throws IllegalArgumentException if any part of the Submission values are invalid/don't exist
 	 */
 	private static Submission processSubmission(String submissionLine) {
 	    if (!submissionLine.startsWith("*")) {
